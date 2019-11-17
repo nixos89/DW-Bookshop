@@ -11,3 +11,7 @@ Health Check
 ---
 
 To see your applications health enter url `http://localhost:8081/healthcheck`
+=======
+# DW-MasterThesis
+  Dropwizard app using RESTful web service to create bookshop store for testing purposes for Master Thesis
+
