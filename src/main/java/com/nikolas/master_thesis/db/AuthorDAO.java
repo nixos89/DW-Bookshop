@@ -1,0 +1,41 @@
+package com.nikolas.master_thesis.db;
+
+import com.nikolas.master_thesis.api.AuthorDTO;
+import com.nikolas.master_thesis.core.Author;
+import com.nikolas.master_thesis.core.Book;
+import com.nikolas.master_thesis.mapper.AuthorDTOMapper;
+import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.sqlobject.statement.UseRowMapper;
+
+import java.util.List;
+
+public interface AuthorDAO {
+
+    @RegisterBeanMapper(Author.class)
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Author(author_id BIGSERIAL PRIMARY KEY, first_name VARCHAR(30), last_name VARCHAR(30) )")
+    void createTableAuthor();
+
+    @RegisterBeanMapper(Author.class)
+    @RegisterBeanMapper(Book.class)
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Author_Book (author_id INTEGER REFERENCES Author(author_id) ON UPDATE CASCADE ON DELETE CASCADE," +
+            " book_id INTEGER REFERENCES Book(book_id) ON UPDATE CASCADE," +
+            " CONSTRAINT Author_Book_pkey PRIMARY KEY (author_id, book_id) )")
+    void createTableAuthorBook();
+
+
+    @GetGeneratedKeys
+    @UseRowMapper(AuthorDTOMapper.class) // TODO: Implement map() method!!!
+    @SqlUpdate("INSERT INTO Author(first_name, last_name) VALUES(?, ?) ")
+    AuthorDTO createAuthor(String firstName, String lastName);
+
+    @UseRowMapper(AuthorDTOMapper.class)
+    @SqlQuery("SELECT author_id, first_name, last_name FROM Author WHERE Author.author_id = ?")
+    AuthorDTO getAuthorById(Long authorId);
+
+    @UseRowMapper(AuthorDTOMapper.class)
+    @SqlQuery("SELECT author_id, first_name, last_name FROM Author")
+    List<AuthorDTO> getAllAuthors();
+}

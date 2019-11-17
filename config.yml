@@ -1,0 +1,62 @@
+template: Hello, %s!
+
+#defaultName: Stranger
+defaultName: ${DW_DEFAULT_NAME:-Stranger}
+
+# use the simple server factory if you only want to run on a single port
+server:
+  type: simple
+  applicationContextPath: /
+  connector:
+    type: http
+    port: 8080
+#    type: admin
+#    port: 8081
+
+
+logging:
+  level: INFO
+  loggers:
+    com.nikolas.master_thesis: DEBUG
+
+database:
+  # the name of your JDBC driver
+  driverClass: org.postgresql.Driver
+
+  # username
+  user: postgres
+
+  # password
+  password: postgres
+
+  # JDBC url (if port 5050 doesn't work try 5432)
+  url: jdbc:postgresql://localhost:5432/dw_app
+
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+    hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect # added later from "Dropwizard Documentation.pdf" file
+
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: "/* MyService Health Check */ SELECT 1"
+
+  # the timeout before a connection validation queries fail
+  validationQueryTimeout: 3s
+
+  # the minimum number of connections to keep open
+  minSize: 8
+
+  # the maximum number of connections to keep open
+  maxSize: 32
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: false
+
+  # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
+  evictionInterval: 10s
+
+  # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
+  minIdleTime: 1 minute

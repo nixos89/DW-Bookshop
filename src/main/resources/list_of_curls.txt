@@ -1,0 +1,4 @@
+For saving person:
+curl -H "Content-Type:application-json" -X POST -d '{"person_id":1, "first_name": "Nikola", "last_name": "Stevanovic"}' http://localhost:8080/persons
+
+
