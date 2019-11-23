@@ -14,8 +14,8 @@ public interface CategoryDAO {
     @RegisterBeanMapper(Category.class)
     @RegisterBeanMapper(Book.class)
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Category_Book(" +
-            " category_id INTEGER REFERENCES Category(category_id) ON UPDATE CASCADE," +
-            " book_id INTEGER REFERENCES Book(book_id) ON UPDATE CASCADE," +
+            " category_id INTEGER REFERENCES Category(category_id) ON UPDATE CASCADE ON DELETE CASCADE," +
+            " book_id INTEGER REFERENCES Book(book_id) ON UPDATE CASCADE ON DELETE CASCADE," +
             " CONSTRAINT Category_Book_pkey PRIMARY KEY (category_id, book_id) )")
     public void createTableBookCategory();
 

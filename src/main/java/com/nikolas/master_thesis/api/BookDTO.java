@@ -2,7 +2,8 @@ package com.nikolas.master_thesis.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BookDTO {
     private Long bookId;
@@ -10,11 +11,14 @@ public class BookDTO {
     private double price;
     private int amount;
     private boolean isDeleted;
-    private Set<Long> authors; // TODO: research HOW TO implement ManyToMany relationships (next 2 collections) with JDBi3 - Step2
-    private Set<Long> categories; // same TODO as above
-    private Set<Long> orderItems; // TODO: research HOW TO implement OneToMany relationship with JDBi3 - Step1
+    private List<Long> authors; // TODO: research HOW TO implement ManyToMany relationships (next 2 collections) with JDBi3 - Step2
+    private List<Long> categories; // same TODO as above
+    private List<Long> orderItems; // TODO: research HOW TO implement OneToMany relationship with JDBi3 - Step1
 
     public BookDTO() {
+        authors = new ArrayList<>();
+        categories = new ArrayList<>();
+        orderItems = new ArrayList<>();
     }
 
     public BookDTO(String title, double price, int amount, boolean isDeleted) {
@@ -30,6 +34,27 @@ public class BookDTO {
         this.price = price;
         this.amount = amount;
         this.isDeleted = isDeleted;
+    }
+
+    public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
+                   List<Long> authors) {
+        this.bookId = bookId;
+        this.title = title;
+        this.price = price;
+        this.amount = amount;
+        this.isDeleted = isDeleted;
+        this.authors = authors;
+    }
+
+    public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
+                   List<Long> authors, List<Long> categories) {
+        this.bookId = bookId;
+        this.title = title;
+        this.price = price;
+        this.amount = amount;
+        this.isDeleted = isDeleted;
+        this.authors = authors;
+        this.categories = categories;
     }
 
     @JsonProperty("book_id")
@@ -53,25 +78,24 @@ public class BookDTO {
     }
 
     @JsonProperty("is_deleted")
-    public boolean isDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
-//    @JsonProperty("author_ids")
-//    public Set<Long> getAuthors() {
-//        return authors;
-//    }
-//
-//    @JsonProperty("category_ids")
-//    public Set<Long> getCategories() {
-//        return categories;
-//    }
-//
-//    @JsonProperty("order_items_ids")
-//    public Set<Long> getOrderItems() {
-//        return orderItems;
-//    }
+    @JsonProperty("author_ids")
+    public List<Long> getAuthors() {
+        return authors;
+    }
 
+    @JsonProperty("category_ids")
+    public List<Long> getCategories() {
+        return categories;
+    }
+
+    @JsonProperty("order_item_ids")
+    public List<Long> getOrderItems() {
+        return orderItems;
+    }
 
     @Override
     public String toString() {

@@ -16,9 +16,8 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class BookResource {
 
-    private final BookDAO bookDAO;
-
     private final static Logger LOGGER = LoggerFactory.getLogger(BookResource.class);
+    private final BookDAO bookDAO;
 
     public BookResource(Jdbi jdbi) {
         bookDAO = jdbi.onDemand(BookDAO.class);
@@ -51,11 +50,42 @@ public class BookResource {
     public Response createBook(BookDTO bookDTO) {
         System.out.println("bookDTO: " + bookDTO.toString());
         LOGGER.info("bookDTO: " + bookDTO.toString());
-        BookDTO savedBook = bookDAO.createBook(bookDTO.getTitle(), bookDTO.getPrice(), bookDTO.getAmount(), bookDTO.isDeleted());
-        if (savedBook != null) {
-            return Response.ok(savedBook).build();
+        int [] rowsAffected = bookDAO.createBook(bookDTO.getTitle(), bookDTO.getPrice(), bookDTO.getAmount(),
+                bookDTO.getIsDeleted(), bookDTO.getAuthors(), bookDTO.getCategories());
+        if (rowsAffected.length>0/*.length>0*/) {
+            return Response.ok(rowsAffected.length).build();
         } else {
             return Response.status(Status.NOT_IMPLEMENTED).build();
+        }
+    }
+
+    @PUT
+    @Path("/{id}")
+    public Response updateBook(@PathParam("id") Long bookId, BookDTO bookDTO) {
+        BookDTO searchedBook = bookDAO.getBookById(bookId);
+        if (searchedBook != null) {
+            boolean isUpdated = bookDAO.updateBook(bookId, bookDTO.getTitle(), bookDTO.getPrice(),
+                    bookDTO.getAmount(), bookDTO.getIsDeleted(), bookDTO.getAuthors(), bookDTO.getCategories());
+            return Response.ok(isUpdated).build();
+        } else {
+            return Response.status(Status.NOT_MODIFIED).build();
+        }
+    }
+
+
+    @DELETE
+    @Path("/{id}")
+    public Response deleteBook(@PathParam("id") Long bookId) {
+        BookDTO book = bookDAO.getBookById(bookId);
+        if (book != null) {
+            boolean isDeleted = bookDAO.deleteBook(bookId);
+            if (isDeleted) {
+                return Response.ok(isDeleted).build();
+            } else {
+                return Response.status(Status.NOT_MODIFIED).build();
+            }
+        } else {
+            return Response.status(Status.NOT_FOUND).build();
         }
     }
 }

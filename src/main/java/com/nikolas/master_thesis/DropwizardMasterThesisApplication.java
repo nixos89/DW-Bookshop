@@ -8,6 +8,7 @@ import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.postgres.PostgresPlugin;
 
 public class DropwizardMasterThesisApplication extends Application<DropwizardMasterThesisConfiguration> {
 
@@ -32,6 +33,9 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
                     final Environment environment) {
         final JdbiFactory jdbiFactory = new JdbiFactory();
         final Jdbi jdbi = jdbiFactory.build(environment, configuration.getDataSourceFactory(), "postgresql");
+        // by this source: http://jdbi.org/#_postgresql ...so it can recognize DB vendor to process arrays from JSON
+        // info got from: https://github.com/jdbi/jdbi/issues/992
+        jdbi.installPlugin(new PostgresPlugin());
 
 //        final DWMasterThesisResource resource = new DWMasterThesisResource(
 //                configuration.getTemplate(), configuration.getDefaultName());

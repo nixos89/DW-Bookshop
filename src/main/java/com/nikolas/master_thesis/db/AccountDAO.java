@@ -24,17 +24,17 @@ public interface AccountDAO {
             "FROM Account a " +
             "LEFT JOIN Users_a u ON u.account_id = a.id")
     @UseRowReducer(AccountUserReducer.class)
-    public List<AccountDTO> getAllAccounts();
+    List<AccountDTO> getAllAccounts();
 
     @UseRowMapper(AccountDTOMapper.class)
     @SqlQuery("SELECT Account.id, Account.name, Users_a.name as u_name FROM Account " +
             "LEFT JOIN Users_a ON Users_a.account_id = Account.id WHERE Account.id = :id")
-    public AccountDTO getAccountDTOById(@Bind("id") int id);
+    AccountDTO getAccountDTOById(@Bind("id") int id);
 
     @UseRowMapper(AccountMapper.class) // PAY ATTENTION to THIS class (it's NOT a DTO) !!!
     @SqlQuery("SELECT Account.id AS a_id, Account.name AS a_name, Users_a.id AS u_id, Users_a.name AS u_name " +
             "FROM Account LEFT JOIN Users_a ON Users_a.account_id = Account.id WHERE Account.id = :id")
-    public Account getAccountById(@Bind("id") int id);
+    Account getAccountById(@Bind("id") int id);
 
     // source: https://stackoverflow.com/questions/24337100/how-to-create-a-one-to-many-relationship-with-jdbi-sql-object-api/52586791#52586791
     // switched from Account/UserA to AccountDTO/UserADTO classes
@@ -50,9 +50,9 @@ public interface AccountDAO {
     @UseRowMapper(AccountDTOMapper.class)
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO Account (name) VALUES (?)")
-    public AccountDTO saveAccount(String name);
+    AccountDTO saveAccount(String name);
 
     @SqlUpdate("DELETE FROM account WHERE id = :id")
-    public boolean deleteAccount(@Bind("id") int id);
+    boolean deleteAccount(@Bind("id") int id);
 
 }
