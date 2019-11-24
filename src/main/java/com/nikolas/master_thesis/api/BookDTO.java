@@ -11,9 +11,9 @@ public class BookDTO {
     private double price;
     private int amount;
     private boolean isDeleted;
-    private List<Long> authors; // TODO: research HOW TO implement ManyToMany relationships (next 2 collections) with JDBi3 - Step2
-    private List<Long> categories; // same TODO as above
-    private List<Long> orderItems; // TODO: research HOW TO implement OneToMany relationship with JDBi3 - Step1
+    private List<Long> authors; // Many-To-Many
+    private List<Long> categories; // Many-To-Many
+    private List<Long> orderItems; // One-To-Many
 
     public BookDTO() {
         authors = new ArrayList<>();
@@ -82,12 +82,12 @@ public class BookDTO {
         return isDeleted;
     }
 
-    @JsonProperty("author_ids")
+    @JsonProperty("author_list")
     public List<Long> getAuthors() {
         return authors;
     }
 
-    @JsonProperty("category_ids")
+    @JsonProperty("category_list")
     public List<Long> getCategories() {
         return categories;
     }

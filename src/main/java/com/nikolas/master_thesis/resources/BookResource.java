@@ -1,6 +1,7 @@
 package com.nikolas.master_thesis.resources;
 
 import com.nikolas.master_thesis.api.BookDTO;
+import com.nikolas.master_thesis.db.AuthorDAO;
 import com.nikolas.master_thesis.db.BookDAO;
 import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
@@ -18,11 +19,14 @@ public class BookResource {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BookResource.class);
     private final BookDAO bookDAO;
+    private final AuthorDAO authorDAO;
 
     public BookResource(Jdbi jdbi) {
+        authorDAO = jdbi.onDemand(AuthorDAO.class);
         bookDAO = jdbi.onDemand(BookDAO.class);
         bookDAO.createBookTable();
     }
+
 
     @GET
     public Response getAllBooks() {
@@ -33,6 +37,7 @@ public class BookResource {
             return Response.status(Status.NOT_FOUND).build();
         }
     }
+
 
     @GET
     @Path("/{id}")
@@ -58,6 +63,7 @@ public class BookResource {
             return Response.status(Status.NOT_IMPLEMENTED).build();
         }
     }
+
 
     @PUT
     @Path("/{id}")

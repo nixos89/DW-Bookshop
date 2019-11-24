@@ -1,6 +1,9 @@
 package com.nikolas.master_thesis.mapper;
 
+import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.api.BookDTO;
+import com.nikolas.master_thesis.api.CategoryDTO;
+import com.nikolas.master_thesis.db.AuthorDAO;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.slf4j.Logger;
@@ -15,6 +18,14 @@ import java.util.Set;
 public class BookDTOMapper implements RowMapper<BookDTO> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BookDTOMapper.class);
+//    private final AccountDAO accountDAO;
+//    private final CategoryDAO categoryDAO;
+
+
+//    public BookDTOMapper(AccountDAO accountDAO, CategoryDAO categoryDAO) {
+//        this.accountDAO = accountDAO;
+//        this.categoryDAO = categoryDAO;
+//    }
 
     @Override
     public BookDTO map(ResultSet rs, StatementContext ctx) throws SQLException {
@@ -25,7 +36,7 @@ public class BookDTOMapper implements RowMapper<BookDTO> {
         // TODO: implement using while(rs.next()) {..} from: https://docs.oracle.com/javase/tutorial/jdbc/basics/retrieving.html
         System.out.println(" ======== rs.getLong(\"author_ids\") " + rs.getLong("author_id") + " ======= ");
 
-        Long bookId = rs.getLong("book_id");
+        long bookId = rs.getLong("book_id");
         String title = rs.getString("title");
         System.out.println(" ===== title: " + title + " ===== ");
         double price = rs.getDouble("price");
@@ -44,21 +55,20 @@ public class BookDTOMapper implements RowMapper<BookDTO> {
             categoryIds.add(categoryId);
         }
 
-//        boolean hasNext = rs.next();
-//        while (hasNext && (rs.getLong("book_id") == bookId)) {
-//            if (rs.getLong("author_id") > 0) {
-//                authorIds.add(rs.getLong("author_id"));
-//            }
-//
-//            if (rs.getLong("category_id") > 0) {
-//                categoryIds.add(rs.getLong("category_id"));
-//            }
-//            hasNext = rs.next();
-//        }
+        boolean hasNext = rs.next();
+        while (hasNext && (rs.getLong("book_id") == bookId)) {
+            if (rs.getLong("author_id") > 0) {
+                authorIds.add(rs.getLong("author_id"));
+            }
+
+            if (rs.getLong("category_id") > 0) {
+                categoryIds.add(rs.getLong("category_id"));
+            }
+            hasNext = rs.next();
+        }
         System.out.println(" +++++++++++ authorsIds: " + authorIds + " +++++++++++ ");
         System.out.println(" +++++++++++ categoryIds: " + categoryIds + " +++++++++++ ");
 
-        return new BookDTO(bookId, title,
-                price, amount, is_deleted, new ArrayList<>(authorIds), new ArrayList<>(categoryIds));
+        return new BookDTO(bookId, title, price, amount, is_deleted, new ArrayList<>(authorIds), new ArrayList<>(categoryIds));
     }
 }

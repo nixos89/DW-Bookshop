@@ -1,11 +1,12 @@
 package com.nikolas.master_thesis.api;
 
-import java.util.HashSet;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Set;
 
 public class CategoryDTO {
 
-    private Long id;
+    private Long categoryId;
     private String name;
     private boolean isDeleted;
     private Set<BookDTO> books; //    @ManyToMany
@@ -18,24 +19,35 @@ public class CategoryDTO {
         this.isDeleted = isDeleted;
     }
 
-    public CategoryDTO(Long id, String name, boolean isDeleted) {
-        this.id = id;
+    public CategoryDTO(Long categoryId, String name, boolean isDeleted) {
+        this.categoryId = categoryId;
         this.name = name;
         this.isDeleted = isDeleted;
     }
 
-    public Long getId() {
-        return id;
+    public CategoryDTO(Long categoryId, String name, boolean isDeleted, Set<BookDTO> books) {
+        this.categoryId = categoryId;
+        this.name = name;
+        this.isDeleted = isDeleted;
+        this.books = books;
     }
 
+    @JsonProperty("category_id")
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    @JsonProperty("name")
     public String getName() {
         return name;
     }
 
-    public boolean isDeleted() {
+    @JsonProperty("is_deleted")
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
+    @JsonProperty("books")
     public Set<BookDTO> getBooks() {
         return books;
     }
