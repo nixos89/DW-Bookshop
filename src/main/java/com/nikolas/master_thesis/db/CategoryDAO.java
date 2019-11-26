@@ -9,6 +9,8 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 
+import java.util.List;
+
 public interface CategoryDAO {
 
     @RegisterBeanMapper(Category.class)
@@ -26,4 +28,8 @@ public interface CategoryDAO {
     @UseRowMapper(CategoryDTOMapper.class)
     @SqlQuery("SELECT category_id, name, is_deleted FROM category WHERE category_id = ?")
     CategoryDTO getCategoryById(Long categoryId);
+
+    @UseRowMapper(CategoryDTOMapper.class)
+    @SqlQuery("SELECT category_id, name, is_deleted FROM category")
+    List<CategoryDTO> getAllCategories();
 }

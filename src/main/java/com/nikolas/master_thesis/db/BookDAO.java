@@ -1,8 +1,6 @@
 package com.nikolas.master_thesis.db;
 
-import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.api.BookDTO;
-import com.nikolas.master_thesis.api.CategoryDTO;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.mapper.BookDTOACMapper;
 import com.nikolas.master_thesis.mapper.BookDTOMapper;
@@ -94,13 +92,6 @@ public interface BookDAO extends SqlObject {
             System.out.println(" ======= Book has been updated! ======== ");
         }
 
-//                handle.createUpdate("UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :is_deleted WHERE book_id = :book_id")
-//                .bind("book_id", bookDTOToSave.getBookId()).bind("title", bookDTOToSave.getTitle()).bind("price", bookDTOToSave.getPrice())
-//                .bind("amount", bookDTOToSave.getAmount()).bind("is_deleted", bookDTOToSave.getIsDeleted())
-//                .executeAndReturnGeneratedKeys()
-//                .map((rs, ctx) -> new BookDTO(rs.getLong("book_id"), rs.getString("title"), rs.getDouble("price"),
-//                        rs.getInt("amount"), rs.getBoolean("is_deleted")
-//                )).findFirst().get();
 
         List<Long> existingCategoryIds = handle
                 .createQuery("SELECT category.category_id FROM category LEFT JOIN category_book ON category.category_id = category_book.category_id WHERE category_book.book_id = :book_id")
@@ -199,23 +190,4 @@ public interface BookDAO extends SqlObject {
     @SqlUpdate("DELETE FROM Book WHERE Book.book_id = ?")
     boolean deleteBook(Long bookId);
 
-    // TODO: Also UPDATE author_ids and category_ids!!!
-    @SqlUpdate(" WITH updated_book AS (" +
-            "UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :is_deleted WHERE book_id = :book_id " +
-            "returning book_id), updated_book_category AS (" +
-            "UPDATE book_category SET category_id = :category_ids WHERE book_id = :book_id) " +
-            "UPDATE book_author(book_id, author_id) SET author_id = :authorIds WHERE book_id = :book_id")
-    boolean updateBook(@Bind("book_id") Long bookId, @Bind("title") String title, @Bind("price") double price,
-                       @Bind("amount") int amount, @Bind("is_deleted") boolean is_deleted,
-                       @BindBean("authorIds") List<Long> authorIds, @BindBean("categoryIds") List<Long> categoryIds);
-
-
-    @SqlUpdate(" WITH updated_book AS (" +
-            "UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :is_deleted WHERE book_id = :book_id " +
-            "returning book_id), updated_book_category AS (" +
-            "UPDATE book_category SET category_id = :category_ids WHERE book_id = :book_id) " +
-            "UPDATE book_author(book_id, author_id) SET author_id = :authorIds WHERE book_id = :book_id")
-    boolean updateBook2(@Bind("book_id") Long bookId, @Bind("title") String title, @Bind("price") double price,
-                        @Bind("amount") int amount, @Bind("is_deleted") boolean is_deleted,
-                        @BindBean("authorIds") List<AuthorDTO> authorIds, @BindBean("categoryIds") List<CategoryDTO> categoryIds);
 }
