@@ -11,21 +11,11 @@ public class BookDTO {
     private double price;
     private int amount;
     private boolean isDeleted;
-    private List<Long> authors; // Many-To-Many
-    private List<Long> categories; // Many-To-Many
-    private List<Long> orderItems; // One-To-Many
+    private List<Long> authors = new ArrayList<>(); // Many-To-Many
+    private List<Long> categories = new ArrayList<>(); // Many-To-Many
+    private List<Long> orderItems = new ArrayList<>(); // One-To-Many
 
     public BookDTO() {
-        authors = new ArrayList<>();
-        categories = new ArrayList<>();
-        orderItems = new ArrayList<>();
-    }
-
-    public BookDTO(String title, double price, int amount, boolean isDeleted) {
-        this.title = title;
-        this.price = price;
-        this.amount = amount;
-        this.isDeleted = isDeleted;
     }
 
     public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted) {
@@ -34,16 +24,6 @@ public class BookDTO {
         this.price = price;
         this.amount = amount;
         this.isDeleted = isDeleted;
-    }
-
-    public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
-                   List<Long> authors) {
-        this.bookId = bookId;
-        this.title = title;
-        this.price = price;
-        this.amount = amount;
-        this.isDeleted = isDeleted;
-        this.authors = authors;
     }
 
     public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
@@ -82,12 +62,12 @@ public class BookDTO {
         return isDeleted;
     }
 
-    @JsonProperty("author_list")
+    @JsonProperty("author_ids")
     public List<Long> getAuthors() {
         return authors;
     }
 
-    @JsonProperty("category_list")
+    @JsonProperty("category_ids")
     public List<Long> getCategories() {
         return categories;
     }

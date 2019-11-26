@@ -50,15 +50,23 @@ public class BookResource {
         }
     }
 
+    @GET
+    @Path("/byAuthor/{authorId}")
+    public Response getBooksByAuthorId(@PathParam("authorId") Long id) {
+        List<BookDTO> books = bookDAO.getBooksByAuthorId(id);
+        if (books != null) {
+            return Response.ok(books).build();
+        } else {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
 
     @POST
-    public Response createBook(BookDTO bookDTO) {
-        System.out.println("bookDTO: " + bookDTO.toString());
-        LOGGER.info("bookDTO: " + bookDTO.toString());
-        int [] rowsAffected = bookDAO.createBook(bookDTO.getTitle(), bookDTO.getPrice(), bookDTO.getAmount(),
-                bookDTO.getIsDeleted(), bookDTO.getAuthors(), bookDTO.getCategories());
-        if (rowsAffected.length>0/*.length>0*/) {
-            return Response.ok(rowsAffected.length).build();
+    public Response saveBook(BookDTO bookDTO) {
+        BookDTO bookDTOSaved = bookDAO.createBookDefault(bookDTO);
+        if (bookDTOSaved != null) {
+            return Response.ok(bookDTOSaved).build();
         } else {
             return Response.status(Status.NOT_IMPLEMENTED).build();
         }
@@ -70,9 +78,18 @@ public class BookResource {
     public Response updateBook(@PathParam("id") Long bookId, BookDTO bookDTO) {
         BookDTO searchedBook = bookDAO.getBookById(bookId);
         if (searchedBook != null) {
-            boolean isUpdated = bookDAO.updateBook(bookId, bookDTO.getTitle(), bookDTO.getPrice(),
-                    bookDTO.getAmount(), bookDTO.getIsDeleted(), bookDTO.getAuthors(), bookDTO.getCategories());
-            return Response.ok(isUpdated).build();
+            BookDTO updateBookDTODefault = null;
+            try {
+                updateBookDTODefault = bookDAO.updateBookDefault(bookDTO);
+            } catch (Exception e) {
+                System.out.println(" ======== ERROR, exception occurred! Exception " + e.getMessage() + " ======== ");
+                e.printStackTrace();
+            }
+            if (updateBookDTODefault != null) {
+                return Response.ok(updateBookDTODefault).build();
+            } else {
+                return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+            }
         } else {
             return Response.status(Status.NOT_MODIFIED).build();
         }

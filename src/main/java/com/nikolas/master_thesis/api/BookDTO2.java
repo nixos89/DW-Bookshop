@@ -1,10 +1,12 @@
 package com.nikolas.master_thesis.api;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonFilter("myFilter")
 public class BookDTO2 {
     private Long bookId;
     private String title;

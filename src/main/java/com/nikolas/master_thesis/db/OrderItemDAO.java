@@ -10,5 +10,4 @@ public interface OrderItemDAO {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS OrderItem ( order_item_id BIGSERIAL PRIMARY KEY, amount INTEGER, book_id INTEGER REFERENCES Book(id), order_id INTEGER REFERENCES Order(order_id) )")
     public void createOrderItemTable();
 
-
 }

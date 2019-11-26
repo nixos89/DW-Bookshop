@@ -24,8 +24,12 @@ public class OrderResource {
     }
 
     @GET
-    public Response getAllOrders(){
+    public Response getAllOrders() {
         List<OrderDTO> orders = orderDAO.getAllOrders();
-        return null;
+        if (orders != null) {
+            return Response.ok(orders).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 }

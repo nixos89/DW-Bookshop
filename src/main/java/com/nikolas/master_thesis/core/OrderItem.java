@@ -7,7 +7,7 @@ public class OrderItem {
 
     private Long orderItemId;
     private int amount;
-    private Book book;
+    private Book book; // many-to-one
     private Order order; // many-to-one
 
     public OrderItem() {
@@ -29,8 +29,6 @@ public class OrderItem {
         this.book = book;
         this.order = order;
     }
-
-
 
     public Long getOrderItemId() {
         return orderItemId;

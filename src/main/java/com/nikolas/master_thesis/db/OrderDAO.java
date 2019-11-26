@@ -5,10 +5,12 @@ import com.nikolas.master_thesis.core.Order;
 import com.nikolas.master_thesis.core.User;
 import com.nikolas.master_thesis.reducers.UserOrderReducer;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowReducer;
 
+import java.util.Date;
 import java.util.List;
 
 public interface OrderDAO {
@@ -24,5 +26,9 @@ public interface OrderDAO {
     @UseRowReducer(UserOrderReducer.class)
     List<OrderDTO> getAllOrders();
 
+
+    @SqlUpdate("INSERT INTO Order(total, order_date, user_id) VALUES (?, ?, ?)")
+    @GetGeneratedKeys
+    OrderDTO addOrder(double total, Date orderDate, Long userId);
 
 }

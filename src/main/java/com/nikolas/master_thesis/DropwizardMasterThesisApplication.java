@@ -33,13 +33,11 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
                     final Environment environment) {
         final JdbiFactory jdbiFactory = new JdbiFactory();
         final Jdbi jdbi = jdbiFactory.build(environment, configuration.getDataSourceFactory(), "postgresql");
-        // by this source: http://jdbi.org/#_postgresql ...so it can recognize DB vendor to process arrays from JSON
+        // next line of code is implemented by this source: http://jdbi.org/#_postgresql
+        // ...so it can recognize DB vendor to process arrays from JSON
         // info got from: https://github.com/jdbi/jdbi/issues/992
         jdbi.installPlugin(new PostgresPlugin());
 
-//        final DWMasterThesisResource resource = new DWMasterThesisResource(
-//                configuration.getTemplate(), configuration.getDefaultName());
-//        final PersonResource personResource = new PersonResource(jdbi);
         final AccountResource accountResource = new AccountResource(jdbi);
         final UserAResource userAResource = new UserAResource(jdbi);
         final BookResource bookResource = new BookResource(jdbi);
@@ -48,12 +46,9 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final UserResource userResource = new UserResource(jdbi);
         final OrderResource orderResource = new OrderResource(jdbi);
 
-
-
         final TemplateHealthCheck healthCheck = new TemplateHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("template", healthCheck);
-//        environment.jersey().register(personResource);
-//        environment.jersey().register(resource);
+
         environment.jersey().register(accountResource);
         environment.jersey().register(userAResource);
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
@@ -62,10 +57,6 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         environment.jersey().register(authorResource);
         environment.jersey().register(userResource);
         environment.jersey().register(orderResource);
-
-        // Debugging::START
-//        HandleJdbiExamples.perform(jdbi);
-        // Debugging::END
 
     }// run(..)
 
