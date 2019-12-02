@@ -10,5 +10,4 @@ public interface RoleDAO {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Role(role_id BIGSERIAL PRIMARY KEY, name VARCHAR(30))")
     void createTableRole();
 
-
 }

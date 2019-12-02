@@ -24,17 +24,6 @@ public interface BookDAO extends SqlObject {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Book( book_id BIGSERIAL PRIMARY KEY, title VARCHAR(255), price double precision, amount INTEGER, is_deleted boolean)")
     void createBookTable();
 
-    @UseRowMapper(BookDTOMapper.class)
-    @SqlBatch("WITH new_book as ( " +
-            "INSERT INTO book(title, price, amount, is_deleted) VALUES(:title, :price, :amount, :is_deleted)" +
-            " returning book_id, title, price, amount, is_deleted ), new_category_book AS ( " +
-            "INSERT INTO category_book(category_id, book_id) VALUES(:category.category_id, (SELECT book_id FROM new_book)) returning category_id ) " +
-            "INSERT INTO author_book (author_id, book_id) VALUES(:author.author_id, (SELECT book_id FROM new_book))")
-    @GetGeneratedKeys
-    int[] createBook(@Bind("title") String title, @Bind("price") double price, @Bind("amount") int amount, @Bind("is_deleted") boolean is_deleted,
-                     @BindBean("author") Iterable<Long> authors, @BindBean("category") Iterable<Long> categories);
-
-
     @SqlUpdate("INSERT INTO author_book(author_id, book_id) VALUES (?, ?)")
     boolean insertAuthorBook(Long authorId, Long bookId);
 
@@ -81,8 +70,6 @@ public interface BookDAO extends SqlObject {
     @SqlUpdate("UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :is_deleted WHERE book_id = :book_id")
     boolean updateBookDTO(@Bind("book_id") Long bookId, @Bind("title") String title, @Bind("price") double price, @Bind("amount") int amount, @Bind("is_deleted") boolean is_deleted);
 
-
-
     default BookDTO updateBookDefault(BookDTO bookDTOToSave) throws Exception {
         Handle handle = getHandle();
         boolean isUpdated = updateBookDTO(bookDTOToSave.getBookId(), bookDTOToSave.getTitle(), bookDTOToSave.getPrice(), bookDTOToSave.getAmount(), bookDTOToSave.getIsDeleted());
@@ -117,7 +104,6 @@ public interface BookDAO extends SqlObject {
         if (existingAuthorIds.size() > bookDTOToSave.getAuthors().size()) {
             for (Long authorId : existingAuthorIds) {
                 if (!bookDTOToSave.getAuthors().contains(authorId)) {
-                    //TODO: Duuuude, u r DELETING and INSERTING same combo...WTF???!! :/ Fix it (ALSO in next for-loop)!!!!
                     deleteAuthorBook(authorId, bookDTOToSave.getBookId());
                     insertAuthorBook(bookDTOToSave.getAuthors().get(i), bookDTOToSave.getBookId());
                     ++i;

@@ -23,5 +23,5 @@ public interface UserDAO {
     @RegisterBeanMapper(value = Role.class, prefix = "r")
     @SqlQuery("SELECT u")
     @UseRowReducer(UserRoleReducer.class)
-    public List<UserADTO> getAllUsers();
+    List<UserADTO> getAllUsers();
 }

@@ -18,15 +18,6 @@ public class Account {
         userAS = new ArrayList<>(); // added to resolve issue with NPE
     }
 
-//    public Account(String name) {
-//        this.name = name;
-//    }
-//
-//    public Account(int id, String name) {
-//        this.id = id;
-//        this.name = name;
-//    }
-
     public Account(int id, String name, List<UserA> userAS) {
         this.id = id;
         this.name = name;
