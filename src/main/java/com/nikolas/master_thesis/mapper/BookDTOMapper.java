@@ -13,12 +13,16 @@ public class BookDTOMapper implements RowMapper<BookDTO> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BookDTOMapper.class);
 
+
     @Override
     public BookDTO map(ResultSet rs, StatementContext ctx) throws SQLException {
-        String msg = String.format("====  map values: %d, %s, %.4f, %d, %b ====",rs.getLong("book_id"), rs.getString("title"),
-                rs.getDouble("price"), rs.getInt("amount"), rs.getBoolean("is_deleted"));
-        LOGGER.info(msg);
-        return new BookDTO(rs.getLong("book_id"), rs.getString("title"),
-                rs.getDouble("price"), rs.getInt("amount"), rs.getBoolean("is_deleted"));
+
+        long bookId = rs.getLong("book_id");
+        String title = rs.getString("title");
+        double price = rs.getDouble("price");
+        int amount = rs.getInt("amount");
+        boolean is_deleted = rs.getBoolean("is_deleted");
+
+        return new BookDTO(bookId, title, price, amount, is_deleted);
     }
 }

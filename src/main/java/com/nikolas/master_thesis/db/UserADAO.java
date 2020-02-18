@@ -33,5 +33,5 @@ public interface UserADAO {
     UserADTO saveUser(String name, int account_id);
 
     @SqlUpdate("DELETE FROM Users_a WHERE id = :id")
-    public boolean deleteUser(@Bind("id") int id);
+    boolean deleteUser(@Bind("id") int id);
 }

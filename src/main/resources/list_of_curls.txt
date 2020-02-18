@@ -1,4 +1,32 @@
-For saving person:
+For saving Person:
+
 curl -H "Content-Type:application-json" -X POST -d '{"person_id":1, "first_name": "Nikola", "last_name": "Stevanovic"}' http://localhost:8080/persons
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+For saving Author:
+
+curl -H "Content-Type:application-json" -X POST -d '{"first_name": "Agatha", "last_name": "Christie"}' http://localhost:8080/authors
+curl -H "Content-Type:application-json" -X POST -d '{"first_name": "Dan", "last_name": "Brown"}' http://localhost:8080/authors
+curl -H "Content-Type:application-json" -X POST -d '{"first_name": "JK", "last_name": "Rowling"}' http://localhost:8080/authors
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+For saving Category:
+
+curl -H "Content-Type:application-json" -X POST -d '{"name": "Drama", "is_deleted": false}' http://localhost:8080/categories
+curl -H "Content-Type:application-json" -X POST -d '{"name": "Motivation", "is_deleted": false}' http://localhost:8080/categories
+curl -H "Content-Type:application-json" -X POST -d '{"name": "Mystery", "is_deleted": false}' http://localhost:8080/categories
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+For saving Book (ver1):
+
+curl -H "Content-Type:application-json" -X POST -d '{ "title": "Secret Symbols of Harry Potter", "price": 32.33, "amount": 400, "is_deleted": false, "author_ids": [2,3], "category_ids": [1,3]}' http://localhost:8080/books
+curl -H "Content-Type:application-json" -X POST -d '{ "title": "Herkul Poirot", "price": 25.33, "amount": 200, "is_deleted": false, "author_ids": [1], "category_ids": [3]}' http://localhost:8080/books
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+For saving Book (ver2):
+
+curl -H "Content-Type:application-json" -X POST -d '{ "title": "Da Vinci Code", "price": 35.99, "amount": 400, "is_deleted": false, "author_list": [{"first_name": "Dan", "last_name": "Brown"}], "category_list": [{"name": "Drama", "is_deleted": false}, {"name": "Mystery", "is_deleted": false}]}' http://localhost:8080/books
+
 
 

@@ -5,6 +5,7 @@ import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.mapper.AuthorDTOMapper;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -21,7 +22,7 @@ public interface AuthorDAO {
     @RegisterBeanMapper(Author.class)
     @RegisterBeanMapper(Book.class)
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Author_Book (author_id INTEGER REFERENCES Author(author_id) ON UPDATE CASCADE ON DELETE CASCADE," +
-            " book_id INTEGER REFERENCES Book(book_id) ON UPDATE CASCADE," +
+            " book_id INTEGER REFERENCES Book(book_id) ON UPDATE CASCADE ON DELETE CASCADE," +
             " CONSTRAINT Author_Book_pkey PRIMARY KEY (author_id, book_id) )")
     void createTableAuthorBook();
 
@@ -38,4 +39,12 @@ public interface AuthorDAO {
     @UseRowMapper(AuthorDTOMapper.class)
     @SqlQuery("SELECT author_id, first_name, last_name FROM Author")
     List<AuthorDTO> getAllAuthors();
+
+    @SqlUpdate("UPDATE Author SET first_name = :first_name, last_name = :last_name WHERE author_id = :author_id")
+    boolean updateAuthor(@Bind("author_id") Long authorId, @Bind("first_name") String firstName, @Bind("last_name") String lastName);
+
+
+    @SqlUpdate("DELETE FROM author WHERE author_id = :author_id")
+    boolean deleteAuthor(@Bind("author_id") Long authorId);
+
 }

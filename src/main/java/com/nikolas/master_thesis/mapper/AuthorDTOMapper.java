@@ -11,7 +11,6 @@ public class AuthorDTOMapper implements RowMapper<AuthorDTO> {
 
     @Override
     public AuthorDTO map(ResultSet rs, StatementContext ctx) throws SQLException {
-        AuthorDTO authorDTO = new AuthorDTO(rs.getLong("author_id"), rs.getString("first_name"), rs.getString("last_name") );
-        return authorDTO;
+        return new AuthorDTO(rs.getLong("author_id"), rs.getString("first_name"), rs.getString("last_name") );
     }
 }

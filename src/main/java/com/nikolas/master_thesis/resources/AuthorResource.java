@@ -40,9 +40,23 @@ public class AuthorResource {
     @PUT
     @Path("/{id}")
     public Response updateAuthor(@PathParam("id") Long authorId, AuthorDTO authorDTO) {
-        AuthorDTO searchedAuthor = authorDAO.getAuthorById(authorDTO.getAuthorId());
+        AuthorDTO searchedAuthor = authorDAO.getAuthorById(authorId);
         if(searchedAuthor!=null){
-            return Response.ok(searchedAuthor).build();
+            boolean isUpdated = authorDAO.updateAuthor(authorId, authorDTO.getFirstName(), authorDTO.getLastName());
+            return Response.ok(isUpdated).build();
+        }else{
+            return Response.status(Status.NOT_MODIFIED).build();
+        }
+    }
+
+
+    @DELETE
+    @Path("/{id}")
+    public Response updateAuthor(@PathParam("id") Long authorId) {
+        AuthorDTO searchedAuthor = authorDAO.getAuthorById(authorId);
+        if(searchedAuthor!=null){
+            boolean isDeleted = authorDAO.deleteAuthor(authorId);
+            return Response.ok(isDeleted).build();
         }else{
             return Response.status(Status.NOT_MODIFIED).build();
         }
