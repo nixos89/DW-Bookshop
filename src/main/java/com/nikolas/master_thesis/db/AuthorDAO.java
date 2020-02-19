@@ -21,8 +21,8 @@ public interface AuthorDAO {
 
     @RegisterBeanMapper(Author.class)
     @RegisterBeanMapper(Book.class)
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS Author_Book (author_id INTEGER REFERENCES Author(author_id) ON UPDATE CASCADE ON DELETE CASCADE," +
-            " book_id INTEGER REFERENCES Book(book_id) ON UPDATE CASCADE ON DELETE CASCADE," +
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Author_Book (author_id BIGINT REFERENCES Author(author_id) ON UPDATE CASCADE ON DELETE CASCADE," +
+            " book_id BIGINT REFERENCES Book(book_id) ON UPDATE CASCADE ON DELETE CASCADE," +
             " CONSTRAINT Author_Book_pkey PRIMARY KEY (author_id, book_id) )")
     void createTableAuthorBook();
 

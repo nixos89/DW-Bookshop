@@ -14,7 +14,7 @@ import java.util.List;
 public interface UserDAO {
 
     @RegisterBeanMapper(User.class)
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS Users (user_id SERIAL PRIMARY KEY, first_name VARCHAR(30), last_name VARCHAR(30), " +
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Users (user_id BIGSERIAL PRIMARY KEY, first_name VARCHAR(30), last_name VARCHAR(30), " +
             "email VARCHAR(30), username VARCHAR(15), password VARCHAR(255), role_id INTEGER REFERENCES Role(role_id) )")
     void createUserTable();
 

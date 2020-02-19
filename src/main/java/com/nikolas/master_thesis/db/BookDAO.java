@@ -13,10 +13,7 @@ import org.jdbi.v3.sqlobject.statement.*;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public interface BookDAO extends SqlObject {
 
@@ -24,18 +21,20 @@ public interface BookDAO extends SqlObject {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Book( book_id BIGSERIAL PRIMARY KEY, title VARCHAR(255), price double precision, amount INTEGER, is_deleted boolean)")
     void createBookTable();
 
+    @Transaction
     @SqlUpdate("INSERT INTO author_book(author_id, book_id) VALUES (?, ?)")
     boolean insertAuthorBook(Long authorId, Long bookId);
 
+    @Transaction
     @SqlUpdate("INSERT INTO category_book(category_id, book_id) VALUES (?, ?)")
     boolean insertCategoryBook(Long categoryId, Long bookId);
 
 
-    // TODO: try this out http://jdbi.org/#_default_methods  and this http://jdbi.org/#_joins
+    // NOTE: try this out http://jdbi.org/#_default_methods  and this http://jdbi.org/#_joins
     @Transaction
     default BookDTO createBookDefault(BookDTO bookDTOToSave) {
         Handle handle = getHandle();
-        BookDTO savedBookDTO = handle.createUpdate("INSERT INTO book(title, price, amount, is_deleted) VALUES(:title, :price, :amount, :is_deleted)")
+        BookDTO savedBookDTO = handle.createUpdate("INSERT INTO Book(title, price, amount, is_deleted) VALUES(:title, :price, :amount, :is_deleted)")
                 .bind("title", bookDTOToSave.getTitle()).bind("price", bookDTOToSave.getPrice())
                 .bind("amount", bookDTOToSave.getAmount()).bind("is_deleted", bookDTOToSave.getIsDeleted())
                 .executeAndReturnGeneratedKeys()
@@ -59,10 +58,11 @@ public interface BookDAO extends SqlObject {
                 authorIds, categoryIds);
     }// createBookDefault
 
-
+    @Transaction
     @SqlUpdate("DELETE FROM author_book WHERE author_id = ? AND book_id = ?")
     void deleteAuthorBook(Long authorId, Long bookId);
 
+    @Transaction
     @SqlUpdate("DELETE FROM category_book WHERE category_book.category_id = ? AND category_book.book_id = ?")
     void deleteCategoryBook(Long categoryId, Long bookId);
 
@@ -70,6 +70,7 @@ public interface BookDAO extends SqlObject {
     @SqlUpdate("UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :is_deleted WHERE book_id = :book_id")
     boolean updateBookDTO(@Bind("book_id") Long bookId, @Bind("title") String title, @Bind("price") double price, @Bind("amount") int amount, @Bind("is_deleted") boolean is_deleted);
 
+    @Transaction
     default BookDTO updateBookDefault(BookDTO bookDTOToSave) throws Exception {
         Handle handle = getHandle();
         boolean isUpdated = updateBookDTO(bookDTOToSave.getBookId(), bookDTOToSave.getTitle(), bookDTOToSave.getPrice(), bookDTOToSave.getAmount(), bookDTOToSave.getIsDeleted());
@@ -78,7 +79,6 @@ public interface BookDAO extends SqlObject {
         } else {
             System.out.println(" ======= Book has been updated! ======== ");
         }
-
 
         List<Long> existingCategoryIds = handle
                 .createQuery("SELECT category.category_id FROM category LEFT JOIN category_book ON category.category_id = category_book.category_id WHERE category_book.book_id = :book_id")
@@ -90,62 +90,43 @@ public interface BookDAO extends SqlObject {
                 .bind("book_id", bookDTOToSave.getBookId())
                 .mapTo(Long.class).list();
 
-        Set<Long> authorIds = iterateAuthorBook(existingAuthorIds, bookDTOToSave);
-        Set<Long> categoryIds = iterateCategoryBook(existingCategoryIds, bookDTOToSave);
+        iterateAuthorBook(existingAuthorIds, bookDTOToSave);
+        iterateCategoryBook(existingCategoryIds, bookDTOToSave);
 
         return new BookDTO(bookDTOToSave.getBookId(), bookDTOToSave.getTitle(), bookDTOToSave.getPrice(),
                 bookDTOToSave.getAmount(), bookDTOToSave.getIsDeleted(),
-                new ArrayList<>(authorIds), new ArrayList<>(categoryIds));
+                new ArrayList<>(bookDTOToSave.getAuthors()), new ArrayList<>(bookDTOToSave.getCategories()));
     }// updateBook
 
-    default Set<Long> iterateAuthorBook(List<Long> existingAuthorIds, BookDTO bookDTOToSave){
-        Set<Long> authorIds = new HashSet<>();
-        int i = 0;
-        if (existingAuthorIds.size() > bookDTOToSave.getAuthors().size()) {
-            for (Long authorId : existingAuthorIds) {
-                if (!bookDTOToSave.getAuthors().contains(authorId)) {
-                    deleteAuthorBook(authorId, bookDTOToSave.getBookId());
-                    insertAuthorBook(bookDTOToSave.getAuthors().get(i), bookDTOToSave.getBookId());
-                    ++i;
-                }
-                authorIds.add(authorId);
-            }
-        } else {
-            for(Long authorId: bookDTOToSave.getAuthors()){
-                if(!existingAuthorIds.contains(authorId)){
-                    deleteAuthorBook(authorId, bookDTOToSave.getBookId());
-                    insertAuthorBook(bookDTOToSave.getAuthors().get(i), bookDTOToSave.getBookId());
-                    ++i;
-                }
-                authorIds.add(authorId);
+    @Transaction
+    default void iterateAuthorBook(List<Long> existingAuthorIds, BookDTO bookDTOToSave) {
+        List<Long> toBeSavedAuthorIds = bookDTOToSave.getAuthors();
+        for (Long existAuthorId : existingAuthorIds) {
+            if (!toBeSavedAuthorIds.contains(existAuthorId)) {
+                deleteAuthorBook(existAuthorId, bookDTOToSave.getBookId());
             }
         }
-        return authorIds;
-    } // iterateAuthorBook
+        for (Long toSaveAId : toBeSavedAuthorIds) {
+            if (!existingAuthorIds.contains(toSaveAId)) {
+                insertAuthorBook(toSaveAId, bookDTOToSave.getBookId());
+            }
+        }
+    }
 
-    default Set<Long> iterateCategoryBook(List<Long> existingCategoryIds, BookDTO bookDTOToSave){
-        Set<Long> categoryIds = new HashSet<>();
-        int i = 0;
-        if (existingCategoryIds.size() > bookDTOToSave.getCategories().size()) {
-            for (Long categoryId : existingCategoryIds) {
-                if (!bookDTOToSave.getCategories().contains(categoryId)) {
-                    deleteCategoryBook(categoryId, bookDTOToSave.getBookId());
-                    insertCategoryBook(bookDTOToSave.getCategories().get(i), bookDTOToSave.getBookId());
-                    ++i;
-                }
-                categoryIds.add(categoryId);
-            }
-        } else {
-            for(Long categoryId: bookDTOToSave.getCategories()){
-                if(!existingCategoryIds.contains(categoryId)){
-                    deleteCategoryBook(categoryId, bookDTOToSave.getBookId());
-                    insertCategoryBook(bookDTOToSave.getCategories().get(i), bookDTOToSave.getBookId());
-                    ++i;
-                }
-                categoryIds.add(categoryId);
+    @Transaction
+    default void iterateCategoryBook(List<Long> existingCategoryIds, BookDTO bookDTOToSave) {
+        List<Long> toBeSavedCategoryIds = bookDTOToSave.getCategories();
+        for (Long eCatId : existingCategoryIds) {
+            if (!toBeSavedCategoryIds.contains(eCatId)) {
+                deleteCategoryBook(eCatId, bookDTOToSave.getBookId());
             }
         }
-        return categoryIds;
+
+        for (Long tbSavedId: toBeSavedCategoryIds) {
+            if (!existingCategoryIds.contains(tbSavedId)) {
+                insertCategoryBook(tbSavedId, bookDTOToSave.getBookId());
+            }
+        }
     }
 
 

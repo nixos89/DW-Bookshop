@@ -1,10 +1,12 @@
 package com.nikolas.master_thesis.resources;
 
 import com.nikolas.master_thesis.api.CategoryDTO;
+import com.nikolas.master_thesis.core.Category;
 import com.nikolas.master_thesis.db.CategoryDAO;
 import org.jdbi.v3.core.Jdbi;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -27,11 +29,21 @@ public class CategoryResource {
     @GET
     public Response getAllCategories() {
         List<CategoryDTO> categories = categoryDAO.getAllCategories();
-        if(!categories.isEmpty()){
+        if (!categories.isEmpty()) {
             return Response.ok(categories).build();
-        }else{
+        } else {
             return Response.status(Status.NOT_FOUND).build();
         }
+    }
 
+    @POST
+    public Response saveCategory(CategoryDTO categoryDTO) {
+        CategoryDTO savedCategory = categoryDAO.createCategory(categoryDTO.getName(), categoryDTO.getIsDeleted());
+        if (savedCategory != null) {
+            return Response.ok(savedCategory).build();
+        } else {
+            System.out.println("Damn! Something went wrong ...");
+            return Response.status(Status.NOT_IMPLEMENTED).build();
+        }
     }
 }
