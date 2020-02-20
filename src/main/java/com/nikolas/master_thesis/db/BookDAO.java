@@ -23,11 +23,11 @@ public interface BookDAO extends SqlObject {
 
     @Transaction
     @SqlUpdate("INSERT INTO author_book(author_id, book_id) VALUES (?, ?)")
-    boolean insertAuthorBook(Long authorId, Long bookId);
+    void insertAuthorBook(Long authorId, Long bookId);
 
     @Transaction
     @SqlUpdate("INSERT INTO category_book(category_id, book_id) VALUES (?, ?)")
-    boolean insertCategoryBook(Long categoryId, Long bookId);
+    void insertCategoryBook(Long categoryId, Long bookId);
 
 
     // NOTE: try this out http://jdbi.org/#_default_methods  and this http://jdbi.org/#_joins
@@ -129,13 +129,12 @@ public interface BookDAO extends SqlObject {
         }
     }
 
-
     @UseRowMapper(BookDTOACMapper.class)
     @SqlQuery("SELECT book.book_id, book.title, book.price, book.amount, book.is_deleted, author.author_id, category.category_id FROM book " +
             "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
             "LEFT JOIN author ON author_book.author_id = author.author_id " +
             "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
-            "LEFT JOIN category ON category_book.category_id = category.category_id")
+            "LEFT JOIN category ON category_book.category_id = category.category_id ORDER BY book.book_id")
     List<BookDTO> getAllBooks();
 
     @UseRowMapper(BookDTOACMapper.class)
@@ -144,14 +143,14 @@ public interface BookDAO extends SqlObject {
             "LEFT JOIN author ON author_book.author_id = author.author_id " +
             "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
             "LEFT JOIN category ON category_book.category_id = category.category_id " +
-            "WHERE book.book_id = :id")
+            "WHERE book.book_id = :id ORDER BY book.book_id")
     BookDTO getBookById(@Bind("id") Long book_id);
 
     @UseRowMapper(BookDTOACMapper.class)
     @SqlQuery("SELECT book.book_id, book.title, book.amount, book.price, book.is_deleted, author_book.author_id, category_book.category_id FROM book " +
             "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
             "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
-            "WHERE author_book.author_id = :author_id")
+            "WHERE author_book.author_id = :author_id ORDER BY book.book_id")
     List<BookDTO> getBooksByAuthorId(@Bind("author_id") Long authorId);
 
     @SqlUpdate("DELETE FROM Book WHERE Book.book_id = ?")
