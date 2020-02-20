@@ -17,7 +17,7 @@ import java.util.List;
 public interface OrderDAO {
 
     @RegisterBeanMapper(Order.class)
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS Orders (order_id BIGSERIAL PRIMARY KEY, total double precision, order_data DATE, user_id INTEGER REFERENCES Users(user_id) )")
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Orders (order_id BIGSERIAL PRIMARY KEY, total double precision, order_date DATE, user_id INTEGER REFERENCES Users(user_id) )")
     void createTableOrder();
 
     @RegisterBeanMapper(OrderItem.class)
