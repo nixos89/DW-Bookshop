@@ -2,6 +2,7 @@ package com.nikolas.master_thesis.db;
 
 import com.nikolas.master_thesis.api.OrderDTO;
 import com.nikolas.master_thesis.core.Order;
+import com.nikolas.master_thesis.core.OrderItem;
 import com.nikolas.master_thesis.core.User;
 import com.nikolas.master_thesis.reducers.UserOrderReducer;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
@@ -18,6 +19,10 @@ public interface OrderDAO {
     @RegisterBeanMapper(Order.class)
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Orders (order_id BIGSERIAL PRIMARY KEY, total double precision, order_data DATE, user_id INTEGER REFERENCES Users(user_id) )")
     void createTableOrder();
+
+    @RegisterBeanMapper(OrderItem.class)
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Order_Item ( order_item_id BIGSERIAL PRIMARY KEY, amount INTEGER, book_id BIGINT REFERENCES Book(book_id), order_id BIGINT REFERENCES Orders(order_id) )")
+    void createOrderItemTable();
 
     @RegisterBeanMapper(value= Order.class, prefix = "o")
     @RegisterBeanMapper(value= User.class, prefix = "u")

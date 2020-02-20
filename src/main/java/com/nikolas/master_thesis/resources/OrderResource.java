@@ -21,6 +21,7 @@ public class OrderResource {
     public OrderResource(Jdbi jdbi) {
         this.orderDAO = jdbi.onDemand(OrderDAO.class);
         orderDAO.createTableOrder();
+        orderDAO.createOrderItemTable();
     }
 
     @GET

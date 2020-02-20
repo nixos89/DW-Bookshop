@@ -3,6 +3,7 @@ package com.nikolas.master_thesis.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 
+/* class 'Saying' created as DTO for demo purposes */
 public class Saying {
 
     private long id;

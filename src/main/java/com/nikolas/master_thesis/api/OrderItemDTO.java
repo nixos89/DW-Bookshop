@@ -3,7 +3,7 @@ package com.nikolas.master_thesis.api;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OrderItemDTO {
-    private Long id;
+    private Long orderItemId;
     private int amount;
     private Long bookId;
     private Long orderId;
@@ -17,16 +17,16 @@ public class OrderItemDTO {
         this.orderId = orderId;
     }
 
-    public OrderItemDTO(Long id, int amount, Long bookId, Long orderId) {
-        this.id = id;
+    public OrderItemDTO(Long orderItemId, int amount, Long bookId, Long orderId) {
+        this.orderItemId = orderItemId;
         this.amount = amount;
         this.bookId = bookId;
         this.orderId = orderId;
     }
 
-    @JsonProperty("id")
-    public Long getId() {
-        return id;
+    @JsonProperty("order_item_id")
+    public Long getOrderItemId() {
+        return orderItemId;
     }
 
     @JsonProperty("amount")
