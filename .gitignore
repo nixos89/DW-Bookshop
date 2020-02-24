@@ -1,6 +1,7 @@
 /.idea/
 /target/
-/src/main/java/com/nikolas/master_thesis/examples/*
+/src/main/java/com/nikolas/master_thesis/examples/*/**
 
 
 *.iml
+/src/main/java/com/nikolas/master_thesis/examples/
