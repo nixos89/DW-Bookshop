@@ -30,8 +30,6 @@ public interface BookDAO extends SqlObject {
     @SqlUpdate("INSERT INTO category_book(category_id, book_id) VALUES (?, ?)")
     void insertCategoryBook(Long categoryId, Long bookId);
 
-
-    // NOTE: try this out http://jdbi.org/#_default_methods  and this http://jdbi.org/#_joins
     @Transaction
     default BookDTO createBookDefault(BookDTO bookDTOToSave) {
         Handle handle = getHandle();

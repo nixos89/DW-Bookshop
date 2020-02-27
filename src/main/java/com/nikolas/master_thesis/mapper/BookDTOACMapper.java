@@ -35,15 +35,7 @@ public class BookDTOACMapper implements RowMapper<BookDTO> {
             categoryIds.add(categoryId);
         }
         LOGGER.info("bookId = " + bookId + ", title = '" + title + "'" + ", price = " + price + ", amount = " + amount
-                + ", is_deleted: " + is_deleted + ", authorId = " + authorId
-                + ", categoryId = " + categoryId);
-
-        /* TODO: try with getRow() and than access ONLY that retrieved row in while-loop
-            ...or might better use suggestion from: https://stackoverflow.com/questions/54202685/mysql-one-to-many-join-mapping-join-with-jdbi-to-list
-            ...or even this one inside of BookDAO in default method https://jdbi.org/#_resultbearing_reducerows
-            ... TRY THIS: iterate with rs.next in condition of while-loop and nest whole body statetments in IF-statement with condition 'rs.getLong("b_id") == bookId' and
-            BREAK in ELSE-statement
-        */
+                + ", is_deleted: " + is_deleted + ", authorId = " + authorId + ", categoryId = " + categoryId);
 
         while (rs.next()) {
             if (rs.getLong("b_id") != bookId) {
@@ -59,9 +51,8 @@ public class BookDTOACMapper implements RowMapper<BookDTO> {
                     categoryIds.add(categoryId);
                 }
 
-//                LOGGER.info("(inside of while-loop) bookId = " + bookId + ", title = '" + title + "'" + ", price = " + price + ", amount = " + amount
-//                        + ", is_deleted: " + is_deleted + ", authorIds = " + authorId
-//                        + ", categoryIds = " + categoryId);
+                LOGGER.info("(inside of while-loop) bookId = " + bookId + ", title = '" + title + "'" + ", price = " + price + ", amount = " + amount
+                        + ", is_deleted: " + is_deleted + ", authorIds = " + authorId + ", categoryIds = " + categoryId);
             }
         }
         final List<Long> authorIdsList = new ArrayList<>(authorIds);
