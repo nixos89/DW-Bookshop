@@ -5,6 +5,7 @@ package com.nikolas.master_thesis.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorDTO {
@@ -18,6 +19,7 @@ public class AuthorDTO {
     private List<BookDTO> books;
 
     public AuthorDTO() {
+        books = new ArrayList<>();
     }
 
     public AuthorDTO(String firstName, String lastName) {
@@ -25,7 +27,6 @@ public class AuthorDTO {
         this.lastName = lastName;
     }
 
-//    @JsonCreator // for testing purposes - throws an error
     public AuthorDTO(Long authorId, String firstName, String lastName) {
         this.authorId = authorId;
         this.firstName = firstName;

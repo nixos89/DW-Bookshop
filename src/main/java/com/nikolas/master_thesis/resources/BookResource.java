@@ -27,7 +27,6 @@ public class BookResource {
         bookDAO.createBookTable();
     }
 
-
     @GET
     public Response getAllBooks() {
         List<BookDTO> books = bookDAO.getAllBooks();
