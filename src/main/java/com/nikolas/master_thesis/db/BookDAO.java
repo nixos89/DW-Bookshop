@@ -1,14 +1,15 @@
 package com.nikolas.master_thesis.db;
 
 import com.nikolas.master_thesis.api.BookDTO;
+import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.mapper.BookDTOACMapper;
 import com.nikolas.master_thesis.mapper.BookDTOMapper;
+import com.nikolas.master_thesis.reducers.BookAuthorReducer;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.sqlobject.SqlObject;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.*;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
 
@@ -129,28 +130,41 @@ public interface BookDAO extends SqlObject {
         }
     }
 
+    @Transaction
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT book.book_id, book.title, book.price, book.amount, book.is_deleted, author.author_id, category.category_id FROM book " +
+    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.price, book.amount, book.is_deleted, author.author_id AS aut_id, category.category_id AS cat_id FROM book " +
             "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
             "LEFT JOIN author ON author_book.author_id = author.author_id " +
             "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
-            "LEFT JOIN category ON category_book.category_id = category.category_id ORDER BY book.book_id")
+            "LEFT JOIN category ON category_book.category_id = category.category_id ORDER BY b_id ASC, aut_id ASC, cat_id ASC")
     List<BookDTO> getAllBooks();
 
+    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.price, book.amount, book.is_deleted, author.author_id AS aut_id FROM book " +
+            "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
+            "LEFT JOIN author ON author_book.author_id = author.author_id ORDER BY b_id ASC, aut_id ASC")
+    @RegisterBeanMapper(value = Author.class)
+    @RegisterBeanMapper(value = Book.class)
+    @UseRowReducer(BookAuthorReducer.class)
+    List<Book> getAllBooksWithAuthors();
+
+
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT book.book_id, book.title, book.price, book.amount, book.is_deleted, author.author_id, category_book.category_id FROM book " +
+    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.price, book.amount, book.is_deleted, author.author_id AS aut_id, category_book.category_id AS cat_id FROM book " +
             "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
             "LEFT JOIN author ON author_book.author_id = author.author_id " +
             "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
             "LEFT JOIN category ON category_book.category_id = category.category_id " +
-            "WHERE book.book_id = :id ORDER BY book.book_id")
+            "WHERE book.book_id = :id ORDER BY aut_id ASC, cat_id ASC")
     BookDTO getBookById(@Bind("id") Long book_id);
 
+    // TODO: fix listing of all Books by Author ID -> try using RowReducer
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT book.book_id, book.title, book.amount, book.price, book.is_deleted, author_book.author_id, category_book.category_id FROM book " +
+    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.amount, book.price, book.is_deleted, author.author_id AS aut_id, category.category_id AS cat_id FROM book " +
             "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
+            "LEFT JOIN author ON author_book.author_id = author.author_id " +
             "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
-            "WHERE author_book.author_id = :author_id ORDER BY book.book_id")
+            "LEFT JOIN category ON category_book.category_id = category.category_id " +
+            "WHERE author.author_id = :author_id ORDER BY b_id ASC, aut_id ASC, cat_id ASC")
     List<BookDTO> getBooksByAuthorId(@Bind("author_id") Long authorId);
 
     @SqlUpdate("DELETE FROM Book WHERE Book.book_id = ?")

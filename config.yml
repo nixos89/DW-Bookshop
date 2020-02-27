@@ -30,7 +30,7 @@ database:
   password: postgres
 
   # JDBC url (if port 5050 doesn't work try 5432)
-  url: jdbc:postgresql://localhost:5432/dw_app
+  url: jdbc:postgresql://localhost:5432/dw_app_db
 
   # any properties specific to your JDBC driver:
   properties:

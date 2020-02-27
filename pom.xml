@@ -52,10 +52,10 @@
             <version>${dropwizard.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-hibernate</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.dropwizard</groupId>-->
+<!--            <artifactId>dropwizard-hibernate</artifactId>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/io.dropwizard/dropwizard-jdbi3 -->
         <dependency>
@@ -85,17 +85,24 @@
             <artifactId>jdbi3-stringtemplate4</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.dropwizard/dropwizard-client -->
         <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.3.0.Final</version>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-client</artifactId>
+            <version>1.3.8</version>
         </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.3.0.Final</version>
-            <scope>provided</scope>
-        </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>org.mapstruct</groupId>-->
+<!--            <artifactId>mapstruct</artifactId>-->
+<!--            <version>1.3.0.Final</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.mapstruct</groupId>-->
+<!--            <artifactId>mapstruct-processor</artifactId>-->
+<!--            <version>1.3.0.Final</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
     </dependencies>
 
