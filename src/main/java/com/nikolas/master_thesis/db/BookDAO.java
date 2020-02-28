@@ -22,13 +22,12 @@ public interface BookDAO extends SqlObject {
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Book( book_id BIGSERIAL PRIMARY KEY, title VARCHAR(255), price double precision, amount INTEGER, is_deleted boolean)")
     void createBookTable();
 
-    @Transaction
     @SqlUpdate("INSERT INTO author_book(author_id, book_id) VALUES (?, ?)")
     void insertAuthorBook(Long authorId, Long bookId);
 
-    @Transaction
     @SqlUpdate("INSERT INTO category_book(category_id, book_id) VALUES (?, ?)")
     void insertCategoryBook(Long categoryId, Long bookId);
+
 
     @Transaction
     default BookDTO createBookDefault(BookDTO bookDTOToSave) {
@@ -57,17 +56,17 @@ public interface BookDAO extends SqlObject {
                 authorIds, categoryIds);
     }// createBookDefault
 
-    @Transaction
+
     @SqlUpdate("DELETE FROM author_book WHERE author_id = ? AND book_id = ?")
     void deleteAuthorBook(Long authorId, Long bookId);
 
-    @Transaction
     @SqlUpdate("DELETE FROM category_book WHERE category_book.category_id = ? AND category_book.book_id = ?")
     void deleteCategoryBook(Long categoryId, Long bookId);
 
     @UseRowMapper(BookDTOMapper.class)
     @SqlUpdate("UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :is_deleted WHERE book_id = :book_id")
     boolean updateBookDTO(@Bind("book_id") Long bookId, @Bind("title") String title, @Bind("price") double price, @Bind("amount") int amount, @Bind("is_deleted") boolean is_deleted);
+
 
     @Transaction
     default BookDTO updateBookDefault(BookDTO bookDTOToSave) throws Exception {
@@ -97,7 +96,7 @@ public interface BookDAO extends SqlObject {
                 new ArrayList<>(bookDTOToSave.getAuthors()), new ArrayList<>(bookDTOToSave.getCategories()));
     }// updateBook
 
-    @Transaction
+
     default void iterateAuthorBook(List<Long> existingAuthorIds, BookDTO bookDTOToSave) {
         List<Long> toBeSavedAuthorIds = bookDTOToSave.getAuthors();
         for (Long existAuthorId : existingAuthorIds) {
@@ -112,7 +111,6 @@ public interface BookDAO extends SqlObject {
         }
     }
 
-    @Transaction
     default void iterateCategoryBook(List<Long> existingCategoryIds, BookDTO bookDTOToSave) {
         List<Long> toBeSavedCategoryIds = bookDTOToSave.getCategories();
         for (Long eCatId : existingCategoryIds) {
@@ -128,38 +126,34 @@ public interface BookDAO extends SqlObject {
         }
     }
 
-
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, ARRAY_AGG(cat.category_id) as cat_ids " +
-            "FROM book b " +
+    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, " +
+            "ARRAY_AGG(cat.category_id) as cat_ids FROM book b " +
             "LEFT JOIN author_book ON author_book.book_id = b.book_id " +
             "LEFT JOIN author aut ON aut.author_id = author_book.author_id " +
             "LEFT JOIN category_book ON category_book.book_id = b.book_id " +
             "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
-            "GROUP BY b_id " +
-            "ORDER BY b_id ASC")
+            "GROUP BY b_id ORDER BY b_id ASC")
     List<BookDTO> getAllBooks();
 
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, ARRAY_AGG(cat.category_id) as cat_ids " +
-            "FROM book b " +
+    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, " +
+            "ARRAY_AGG(cat.category_id) as cat_ids FROM book b " +
             "LEFT JOIN author_book ON author_book.book_id = b.book_id " +
             "LEFT JOIN author aut ON aut.author_id = author_book.author_id " +
             "LEFT JOIN category_book ON category_book.book_id = b.book_id " +
             "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
-            "WHERE b.book_id = :id GROUP BY b_id " +
-            "ORDER BY b_id ASC")
+            "WHERE b.book_id = :id GROUP BY b_id ORDER BY b_id ASC")
     BookDTO getBookById(@Bind("id") Long book_id);
 
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, ARRAY_AGG(cat.category_id) as cat_ids " +
-            "FROM book b " +
+    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, " +
+            "ARRAY_AGG(cat.category_id) as cat_ids FROM book b " +
             "LEFT JOIN author_book ON author_book.book_id = b.book_id " +
             "LEFT JOIN author aut ON aut.author_id = author_book.author_id " +
             "LEFT JOIN category_book ON category_book.book_id = b.book_id " +
             "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
-            "WHERE aut.author_id = :id GROUP BY b_id " +
-            "ORDER BY b_id ASC")
+            "WHERE aut.author_id = :id GROUP BY b_id ORDER BY b_id ASC")
     List<BookDTO> getBooksByAuthorId(@Bind("id") Long authorId);
 
     @SqlUpdate("DELETE FROM Book WHERE Book.book_id = ?")
