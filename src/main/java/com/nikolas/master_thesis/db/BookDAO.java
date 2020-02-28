@@ -128,42 +128,39 @@ public interface BookDAO extends SqlObject {
         }
     }
 
-    @Transaction
+
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.price, book.amount, book.is_deleted, author.author_id AS aut_id, category.category_id AS cat_id FROM book " +
-            "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
-            "LEFT JOIN author ON author_book.author_id = author.author_id " +
-            "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
-            "LEFT JOIN category ON category_book.category_id = category.category_id ORDER BY b_id ASC, aut_id ASC, cat_id ASC")
+    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, ARRAY_AGG(cat.category_id) as cat_ids " +
+            "FROM book b " +
+            "LEFT JOIN author_book ON author_book.book_id = b.book_id " +
+            "LEFT JOIN author aut ON aut.author_id = author_book.author_id " +
+            "LEFT JOIN category_book ON category_book.book_id = b.book_id " +
+            "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
+            "GROUP BY b_id " +
+            "ORDER BY b_id ASC")
     List<BookDTO> getAllBooks();
 
-    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.price, book.amount, book.is_deleted, author.author_id AS aut_id FROM book " +
-            "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
-            "LEFT JOIN author ON author_book.author_id = author.author_id ORDER BY b_id ASC, aut_id ASC")
-    @RegisterBeanMapper(value = Author.class)
-    @RegisterBeanMapper(value = Book.class)
-    @UseRowReducer(BookAuthorReducer.class)
-    List<Book> getAllBooksWithAuthors();
-
-
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.price, book.amount, book.is_deleted, author.author_id AS aut_id, category_book.category_id AS cat_id FROM book " +
-            "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
-            "LEFT JOIN author ON author_book.author_id = author.author_id " +
-            "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
-            "LEFT JOIN category ON category_book.category_id = category.category_id " +
-            "WHERE book.book_id = :id ORDER BY aut_id ASC, cat_id ASC")
+    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, ARRAY_AGG(cat.category_id) as cat_ids " +
+            "FROM book b " +
+            "LEFT JOIN author_book ON author_book.book_id = b.book_id " +
+            "LEFT JOIN author aut ON aut.author_id = author_book.author_id " +
+            "LEFT JOIN category_book ON category_book.book_id = b.book_id " +
+            "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
+            "WHERE b.book_id = :id GROUP BY b_id " +
+            "ORDER BY b_id ASC")
     BookDTO getBookById(@Bind("id") Long book_id);
 
-    // TODO: fix listing of all Books by Author ID -> try using RowReducer
     @UseRowMapper(BookDTOACMapper.class)
-    @SqlQuery("SELECT book.book_id AS b_id, book.title, book.amount, book.price, book.is_deleted, author.author_id AS aut_id, category.category_id AS cat_id FROM book " +
-            "LEFT JOIN author_book ON book.book_id = author_book.book_id " +
-            "LEFT JOIN author ON author_book.author_id = author.author_id " +
-            "LEFT JOIN category_book ON book.book_id = category_book.book_id " +
-            "LEFT JOIN category ON category_book.category_id = category.category_id " +
-            "WHERE author.author_id = :author_id ORDER BY b_id ASC, aut_id ASC, cat_id ASC")
-    List<BookDTO> getBooksByAuthorId(@Bind("author_id") Long authorId);
+    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, ARRAY_AGG(cat.category_id) as cat_ids " +
+            "FROM book b " +
+            "LEFT JOIN author_book ON author_book.book_id = b.book_id " +
+            "LEFT JOIN author aut ON aut.author_id = author_book.author_id " +
+            "LEFT JOIN category_book ON category_book.book_id = b.book_id " +
+            "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
+            "WHERE aut.author_id = :id GROUP BY b_id " +
+            "ORDER BY b_id ASC")
+    List<BookDTO> getBooksByAuthorId(@Bind("id") Long authorId);
 
     @SqlUpdate("DELETE FROM Book WHERE Book.book_id = ?")
     boolean deleteBook(Long bookId);

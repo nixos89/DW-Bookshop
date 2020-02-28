@@ -9,9 +9,10 @@ public class Category {
     private Long categoryId;
     private String name;
     private boolean isDeleted;
-    private Set<Book> books = new HashSet<>(); // @ManyToMany
+    private Set<Book> books; // @ManyToMany
 
     public Category() {
+        books = new HashSet<>();
     }
 
     public Category(String name, boolean isDeleted) {

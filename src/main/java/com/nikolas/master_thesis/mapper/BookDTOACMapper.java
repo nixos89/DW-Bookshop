@@ -6,8 +6,7 @@ import org.jdbi.v3.core.statement.StatementContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class BookDTOACMapper implements RowMapper<BookDTO> {
@@ -26,35 +25,18 @@ public class BookDTOACMapper implements RowMapper<BookDTO> {
         Set<Long> authorIds = new HashSet<>();
         Set<Long> categoryIds = new HashSet<>();
 
-        long authorId = rs.getLong("aut_id");
-        if (authorId > 0) {
-            authorIds.add(authorId);
-        }
-        long categoryId = rs.getLong("cat_id");
-        if (categoryId > 0) {
-            categoryIds.add(categoryId);
-        }
-        LOGGER.info("bookId = " + bookId + ", title = '" + title + "'" + ", price = " + price + ", amount = " + amount
-                + ", is_deleted: " + is_deleted + ", authorId = " + authorId + ", categoryId = " + categoryId);
+        Array autIdsArray = rs.getArray("aut_ids");
+        LOGGER.info("For bookId = " + bookId+ " authorIdsString: " + autIdsArray);
+        Long[] autIds = (Long[]) (rs.getArray("aut_ids").getArray());
+        LOGGER.info("For bookId = " + bookId+ " autIds: " + Arrays.toString(autIds));
+        Collections.addAll(authorIds, autIds);
 
-        while (rs.next()) {
-            if (rs.getLong("b_id") != bookId) {
-                break;
-            } else {
-                authorId = rs.getLong("aut_id");
-                if (authorId > 0) {
-                    authorIds.add(authorId);
-                }
+        Long[] catIds = (Long[]) (rs.getArray("cat_ids").getArray());
+        LOGGER.info("For bookId = " + bookId+ " catIds: " + Arrays.toString(catIds));
+        Collections.addAll(categoryIds, catIds);
 
-                categoryId = rs.getLong("cat_id");
-                if (categoryId > 0) {
-                    categoryIds.add(categoryId);
-                }
-
-                LOGGER.info("(inside of while-loop) bookId = " + bookId + ", title = '" + title + "'" + ", price = " + price + ", amount = " + amount
-                        + ", is_deleted: " + is_deleted + ", authorIds = " + authorId + ", categoryIds = " + categoryId);
-            }
-        }
+//        LOGGER.info("bookId = " + bookId + ", title = '" + title + "'" + ", price = " + price + ", amount = " + amount
+//                + ", is_deleted: " + is_deleted + ", authorId = " + authorId + ", categoryId = " + categoryId);
         final List<Long> authorIdsList = new ArrayList<>(authorIds);
         final List<Long> categoryIdsList = new ArrayList<>(categoryIds);
 

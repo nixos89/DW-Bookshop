@@ -16,7 +16,7 @@ public class AuthorDTO {
 
     private String lastName;
 
-    private List<BookDTO> books;
+    private List<Long> books;
 
     public AuthorDTO() {
         books = new ArrayList<>();
@@ -33,7 +33,7 @@ public class AuthorDTO {
         this.lastName = lastName;
     }
 
-    public AuthorDTO(Long authorId, String firstName, String lastName, List<BookDTO> books) {
+    public AuthorDTO(Long authorId, String firstName, String lastName, List<Long> books) {
         this.authorId = authorId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -55,8 +55,8 @@ public class AuthorDTO {
         return lastName;
     }
 
-    @JsonProperty("books")
-    public List<BookDTO> getBooks() {
+    @JsonProperty("book_ids")
+    public List<Long> getBooks() {
         return books;
     }
 }

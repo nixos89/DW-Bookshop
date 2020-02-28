@@ -9,7 +9,7 @@ public class CategoryDTO {
     private Long categoryId;
     private String name;
     private boolean isDeleted;
-    private Set<BookDTO> books; //    @ManyToMany
+    private Set<Long> books; //    @ManyToMany
 
     public CategoryDTO() {
     }
@@ -25,7 +25,7 @@ public class CategoryDTO {
         this.isDeleted = isDeleted;
     }
 
-    public CategoryDTO(Long categoryId, String name, boolean isDeleted, Set<BookDTO> books) {
+    public CategoryDTO(Long categoryId, String name, boolean isDeleted, Set<Long> books) {
         this.categoryId = categoryId;
         this.name = name;
         this.isDeleted = isDeleted;
@@ -47,8 +47,8 @@ public class CategoryDTO {
         return isDeleted;
     }
 
-    @JsonProperty("books")
-    public Set<BookDTO> getBooks() {
+    @JsonProperty("book_ids")
+    public Set<Long> getBooks() {
         return books;
     }
 }
