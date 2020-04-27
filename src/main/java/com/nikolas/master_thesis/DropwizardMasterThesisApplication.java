@@ -38,6 +38,7 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         // info got from: https://github.com/jdbi/jdbi/issues/992
         jdbi.installPlugin(new PostgresPlugin());
 
+        // declaring RESOURCE variables with final modifier because it's creating them as Singletons
         final AccountResource accountResource = new AccountResource(jdbi);
         final UserAResource userAResource = new UserAResource(jdbi);
         final BookResource bookResource = new BookResource(jdbi);

@@ -5,10 +5,7 @@ import com.nikolas.master_thesis.core.Category;
 import com.nikolas.master_thesis.db.CategoryDAO;
 import org.jdbi.v3.core.Jdbi;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -35,6 +32,19 @@ public class CategoryResource {
             return Response.status(Status.NOT_FOUND).build();
         }
     }
+
+
+    @GET
+    @Path("/{id}")
+    public Response getCategoryById(@PathParam("id") Long id) {
+        CategoryDTO category = categoryDAO.getCategoryById(id);
+        if (category != null) {
+            return Response.ok(category).build();
+        } else {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+    }
+
 
     @POST
     public Response saveCategory(CategoryDTO categoryDTO) {

@@ -4,3 +4,4 @@
 /src/main/java/com/nikolas/master_thesis/examples/*/**
 
 *.iml
+.attach_pid**

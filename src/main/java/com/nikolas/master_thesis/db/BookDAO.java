@@ -96,7 +96,7 @@ public interface BookDAO extends SqlObject {
                 new ArrayList<>(bookDTOToSave.getAuthors()), new ArrayList<>(bookDTOToSave.getCategories()));
     }// updateBook
 
-
+    // FIXME: put this into Service layer class
     default void iterateAuthorBook(List<Long> existingAuthorIds, BookDTO bookDTOToSave) {
         List<Long> toBeSavedAuthorIds = bookDTOToSave.getAuthors();
         for (Long existAuthorId : existingAuthorIds) {
@@ -111,6 +111,7 @@ public interface BookDAO extends SqlObject {
         }
     }
 
+    // FIXME: put this into Service layer class
     default void iterateCategoryBook(List<Long> existingCategoryIds, BookDTO bookDTOToSave) {
         List<Long> toBeSavedCategoryIds = bookDTOToSave.getCategories();
         for (Long eCatId : existingCategoryIds) {
@@ -126,6 +127,7 @@ public interface BookDAO extends SqlObject {
         }
     }
 
+    // FIXME: to speed up querying use ARRAY Constructor instead of ARRAY_AGG Function from this suggestion https://dba.stackexchange.com/a/173879/202258
     @UseRowMapper(BookDTOACMapper.class)
     @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, " +
             "ARRAY_AGG(cat.category_id) as cat_ids FROM book b " +
@@ -136,6 +138,8 @@ public interface BookDAO extends SqlObject {
             "GROUP BY b_id ORDER BY b_id ASC")
     List<BookDTO> getAllBooks();
 
+
+    // FIXME: to speed up querying use ARRAY Constructor instead of ARRAY_AGG Function from this suggestion https://dba.stackexchange.com/a/173879/202258
     @UseRowMapper(BookDTOACMapper.class)
     @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, " +
             "ARRAY_AGG(cat.category_id) as cat_ids FROM book b " +
@@ -146,6 +150,8 @@ public interface BookDAO extends SqlObject {
             "WHERE b.book_id = :id GROUP BY b_id ORDER BY b_id ASC")
     BookDTO getBookById(@Bind("id") Long book_id);
 
+
+    // FIXME: to speed up querying use ARRAY Constructor instead of ARRAY_AGG Function from this suggestion https://dba.stackexchange.com/a/173879/202258
     @UseRowMapper(BookDTOACMapper.class)
     @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, " +
             "ARRAY_AGG(cat.category_id) as cat_ids FROM book b " +

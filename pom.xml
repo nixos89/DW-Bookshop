@@ -10,7 +10,7 @@
     </prerequisites>
 
     <groupId>com.nikolas.master_thesis</groupId>
-    <artifactId>HelloWorld</artifactId>
+    <artifactId>DW-Bookshop</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -52,11 +52,6 @@
             <version>${dropwizard.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>io.dropwizard</groupId>-->
-<!--            <artifactId>dropwizard-hibernate</artifactId>-->
-<!--        </dependency>-->
-
         <!-- https://mvnrepository.com/artifact/io.dropwizard/dropwizard-jdbi3 -->
         <dependency>
             <groupId>io.dropwizard</groupId>
@@ -92,18 +87,17 @@
             <version>1.3.8</version>
         </dependency>
 
-        <!--        <dependency>-->
-<!--            <groupId>org.mapstruct</groupId>-->
-<!--            <artifactId>mapstruct</artifactId>-->
-<!--            <version>1.3.0.Final</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.mapstruct</groupId>-->
-<!--            <artifactId>mapstruct-processor</artifactId>-->
-<!--            <version>1.3.0.Final</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.3.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.3.0.Final</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 
