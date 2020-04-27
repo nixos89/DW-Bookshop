@@ -17,21 +17,27 @@ import java.util.List;
 public interface OrderDAO {
 
     @RegisterBeanMapper(Order.class)
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS Orders (order_id BIGSERIAL PRIMARY KEY, total double precision, order_date DATE, user_id INTEGER REFERENCES Users(user_id) )")
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Orders (order_id BIGSERIAL PRIMARY KEY, total double precision, " +
+            "order_date DATE, user_id INTEGER REFERENCES Users(user_id) )")
     void createTableOrder();
 
     @RegisterBeanMapper(OrderItem.class)
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS Order_Item ( order_item_id BIGSERIAL PRIMARY KEY, amount INTEGER, book_id BIGINT REFERENCES Book(book_id), order_id BIGINT REFERENCES Orders(order_id) )")
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Order_Item ( order_item_id BIGSERIAL PRIMARY KEY, amount INTEGER, book_id BIGINT " +
+            "REFERENCES Book(book_id), order_id BIGINT REFERENCES Orders(order_id) )")
     void createOrderItemTable();
 
     @RegisterBeanMapper(value= Order.class, prefix = "o")
     @RegisterBeanMapper(value= User.class, prefix = "u")
-    @SqlQuery("SELECT o.order_id o_id, o.total o_total, o.order_date o_order_date, u.user_id u_id, u.first_name u_first_name, u.last_name u_last_name, " +
-            "u.username u_username, u.email u_email, u.role_id u_role_id FROM Order LEFT JOIN Users ON Users.user_id = Order.user_id")
+    @SqlQuery("SELECT o.order_id o_id, o.total o_total, o.order_date o_order_date, u.user_id u_id, u.first_name u_first_name, " +
+            "u.last_name u_last_name, u.username u_username, u.email u_email, u.role_id u_role_id " +
+            "FROM Order LEFT JOIN Users ON Users.user_id = Order.user_id")
     @UseRowReducer(UserOrderReducer.class)
-    List<OrderDTO> getAllOrders();
+    List<Order> getAllOrders();
 
+    @SqlQuery("SELECT order_item_id AS oi_id, amount, book_id, order_id  FROM order_item WHERE order_id = ?")
+    List<OrderItem> getAllOrderItemsByOrderId(Long orderId);
 
+    // TODO: complete this method
     @SqlUpdate("INSERT INTO Order(total, order_date, user_id) VALUES (?, ?, ?)")
     @GetGeneratedKeys
     OrderDTO addOrder(double total, Date orderDate, Long userId);

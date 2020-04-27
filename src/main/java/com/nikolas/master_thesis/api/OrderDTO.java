@@ -2,37 +2,34 @@ package com.nikolas.master_thesis.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Set;
+import java.util.List;
 
 public class OrderDTO {
-    private Long id;
-    private double total;
+    private Long orderId;
+    private double totalPrice;
     private String orderDate;
-    private Set<OrderItemDTO> orderItems;
-    private Long userId;
+    private List<OrderItemDTO> orderItems;
+    private UserDTO userDTO;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(double total, String orderDate, Long userId) {
-        this.total = total;
+    public OrderDTO(Long orderId, double totalPrice, String orderDate, List<OrderItemDTO> orderItems, UserDTO userDTO) {
+        this.orderId = orderId;
+        this.totalPrice = totalPrice;
         this.orderDate = orderDate;
-        this.userId = userId;
+        this.orderItems = orderItems;
+        this.userDTO = userDTO;
     }
 
-    public OrderDTO(Long id, double total, String orderDate, Long userId) {
-        this.id = id;
-        this.total = total;
-        this.orderDate = orderDate;
-        this.userId = userId;
+    @JsonProperty("order_id")
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public double getTotal() {
-        return total;
+    @JsonProperty("total_price")
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
     @JsonProperty("order_date")
@@ -40,12 +37,13 @@ public class OrderDTO {
         return orderDate;
     }
 
-    public Set<OrderItemDTO> getOrderItems() {
+    @JsonProperty("order_items")
+    public List<OrderItemDTO> getOrderItems() {
         return orderItems;
     }
 
-    @JsonProperty("user_id")
-    public Long getUserId() {
-        return userId;
+    @JsonProperty("user")
+    public UserDTO getUserDTO() {
+        return userDTO;
     }
 }

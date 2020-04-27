@@ -3,6 +3,7 @@ package com.nikolas.master_thesis.db;
 import com.nikolas.master_thesis.api.BookDTO;
 import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
+import com.nikolas.master_thesis.mapper.BookACMapper;
 import com.nikolas.master_thesis.mapper.BookDTOACMapper;
 import com.nikolas.master_thesis.mapper.BookDTOMapper;
 import com.nikolas.master_thesis.reducers.BookAuthorReducer;
@@ -137,6 +138,16 @@ public interface BookDAO extends SqlObject {
             "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
             "GROUP BY b_id ORDER BY b_id ASC")
     List<BookDTO> getAllBooks();
+
+    @UseRowMapper(BookACMapper.class)
+    @SqlQuery("SELECT b.book_id AS b_id, b.title, b.price, b.amount, b.is_deleted, ARRAY_AGG(aut.author_id) as aut_ids, " +
+            "ARRAY_AGG(cat.category_id) as cat_ids FROM book b " +
+            "LEFT JOIN author_book ON author_book.book_id = b.book_id " +
+            "LEFT JOIN author aut ON aut.author_id = author_book.author_id " +
+            "LEFT JOIN category_book ON category_book.book_id = b.book_id " +
+            "LEFT JOIN category cat ON cat.category_id = category_book.category_id " +
+            "GROUP BY b_id ORDER BY b_id ASC")
+    List<Book> getAllBookPojos();
 
 
     // FIXME: to speed up querying use ARRAY Constructor instead of ARRAY_AGG Function from this suggestion https://dba.stackexchange.com/a/173879/202258

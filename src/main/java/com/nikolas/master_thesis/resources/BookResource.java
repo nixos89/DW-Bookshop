@@ -19,10 +19,10 @@ public class BookResource {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BookResource.class);
     private final BookDAO bookDAO;
-    private final AuthorDAO authorDAO;
+//    private final AuthorDAO authorDAO;
 
     public BookResource(Jdbi jdbi) {
-        authorDAO = jdbi.onDemand(AuthorDAO.class);
+//        authorDAO = jdbi.onDemand(AuthorDAO.class);
         bookDAO = jdbi.onDemand(BookDAO.class);
         bookDAO.createBookTable();
     }
@@ -102,7 +102,7 @@ public class BookResource {
         if (book != null) {
             boolean isDeleted = bookDAO.deleteBook(bookId);
             if (isDeleted) {
-                return Response.ok(isDeleted).build();
+                return Response.noContent().build();
             } else {
                 return Response.status(Status.NOT_MODIFIED).build();
             }

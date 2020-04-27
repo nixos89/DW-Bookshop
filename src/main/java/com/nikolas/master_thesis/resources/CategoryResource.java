@@ -48,9 +48,9 @@ public class CategoryResource {
 
     @POST
     public Response saveCategory(CategoryDTO categoryDTO) {
-        CategoryDTO savedCategory = categoryDAO.createCategory(categoryDTO.getName(), categoryDTO.getIsDeleted());
-        if (savedCategory != null) {
-            return Response.ok(savedCategory).build();
+        boolean savedCategory = categoryDAO.createCategory(categoryDTO.getName(), categoryDTO.getIsDeleted());
+        if (savedCategory) {
+            return Response.noContent().build();
         } else {
             System.out.println("Damn! Something went wrong ...");
             return Response.status(Status.NOT_IMPLEMENTED).build();

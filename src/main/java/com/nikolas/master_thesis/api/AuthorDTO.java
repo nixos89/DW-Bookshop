@@ -2,7 +2,6 @@ package com.nikolas.master_thesis.api;
 
 /* contains getter methods, but NOT ANY setter methods
  * due to it's Thread safety */
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -16,10 +15,7 @@ public class AuthorDTO {
 
     private String lastName;
 
-    private List<Long> books;
-
     public AuthorDTO() {
-        books = new ArrayList<>();
     }
 
     public AuthorDTO(String firstName, String lastName) {
@@ -31,13 +27,6 @@ public class AuthorDTO {
         this.authorId = authorId;
         this.firstName = firstName;
         this.lastName = lastName;
-    }
-
-    public AuthorDTO(Long authorId, String firstName, String lastName, List<Long> books) {
-        this.authorId = authorId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.books = books;
     }
 
     @JsonProperty("author_id")
@@ -55,8 +44,4 @@ public class AuthorDTO {
         return lastName;
     }
 
-    @JsonProperty("book_ids")
-    public List<Long> getBooks() {
-        return books;
-    }
 }

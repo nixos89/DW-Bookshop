@@ -13,16 +13,6 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(int amount) {
-        this.amount = amount;
-    }
-
-    public OrderItem(int amount, Book book, Order order) {
-        this.amount = amount;
-        this.book = book;
-        this.order = order;
-    }
-
     public OrderItem(Long orderItemId, int amount, Book book, Order order) {
         this.orderItemId = orderItemId;
         this.amount = amount;
