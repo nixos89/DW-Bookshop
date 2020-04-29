@@ -86,15 +86,21 @@ public class BookService {
                         rs.getInt("amount"), rs.getBoolean("is_deleted")
                 )).findFirst().orElse(null);
 
+//        handle.attach(BookDAO.class);
+//        handle.begin();
         if (savedBook != null) {
-            for (Long aId: bookDTOToSave.getAuthors()) {
+            for (Long aId : bookDTOToSave.getAuthors()) {
                 bookDAO.insertAuthorBook(aId, savedBook.getBookId());
             }
-            for (Long cId: bookDTOToSave.getCategories()) {
+            for (Long cId : bookDTOToSave.getCategories()) {
                 bookDAO.insertCategoryBook(cId, savedBook.getBookId());
             }
+//            handle.commit();
+//            handle.close();
             return true;
         } else {
+//            handle.rollback();
+//            handle.close();
             return false;
         }
     }
@@ -102,10 +108,11 @@ public class BookService {
     public boolean updateBook(AddUpdateBookDTO bookDTOToUpdate, Long bookId) {
         BookDTO2 searchedBook = getBookById(bookId);
         if (searchedBook != null) {
+            Handle handle = jdbi.open();
             try {
-                Handle handle = jdbi.open();
+//                handle.begin();
                 boolean isUpdated = bookDAO.updateBookDTO(bookId, bookDTOToUpdate.getTitle(),
-                            bookDTOToUpdate.getPrice(), bookDTOToUpdate.getAmount(), bookDTOToUpdate.isDeleted());
+                        bookDTOToUpdate.getPrice(), bookDTOToUpdate.getAmount(), bookDTOToUpdate.isDeleted());
                 if (!isUpdated) {
                     throw new Exception("Book has NOT been updated! Status: " + Response.Status.NOT_MODIFIED);
                 } else {
@@ -122,9 +129,13 @@ public class BookService {
 
                 bookDAO.iterateAuthorBook(existingAuthorIds, bookDTOToUpdate, bookId);
                 bookDAO.iterateCategoryBook(existingCategoryIds, bookDTOToUpdate, bookId);
+//                handle.commit();
             } catch (Exception e) {
+//                handle.rollback();
                 e.printStackTrace();
-            }
+            } /*finally {
+                handle.close();
+            } */
             return true;
         } else {
             return false;
@@ -135,9 +146,18 @@ public class BookService {
     public boolean deleteBook(Long id) {
         BookDTO2 book = getBookById(id);
         if (book != null) {
-            return bookDAO.deleteBook(id);
-        } else {
-            return false;
+            Handle handle = jdbi.open();
+            handle.begin();
+            if (bookDAO.deleteBook(id)) {
+                handle.commit();
+                handle.close();
+                return true;
+            } else {
+                handle.rollback();
+                handle.close();
+                return false;
+            }
         }
+        return false;
     }
 }
