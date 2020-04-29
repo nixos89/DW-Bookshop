@@ -11,12 +11,6 @@ public class OrderItemDTO {
     public OrderItemDTO() {
     }
 
-    public OrderItemDTO(int amount, Long bookId, Long orderId) {
-        this.amount = amount;
-        this.bookId = bookId;
-        this.orderId = orderId;
-    }
-
     public OrderItemDTO(Long orderItemId, int amount, Long bookId, Long orderId) {
         this.orderItemId = orderItemId;
         this.amount = amount;

@@ -2,12 +2,14 @@ package com.nikolas.master_thesis.resources;
 
 import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.service.AuthorService;
+import com.nikolas.master_thesis.util.DWBException;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.List;
 
 
 @Path("/authors")
@@ -23,20 +25,31 @@ public class AuthorResource {
 
     @GET
     @Path("/{id}")
-    public Response getAuthorById(@PathParam("id") Long id) {
-        return Response.ok(authorService.getAuthorById(id)).build();
+    public Response getAuthorById(@PathParam("id") Long id) throws DWBException {
+        AuthorDTO author = authorService.getAuthorById(id);
+        if (author != null) {
+            return Response.ok(author).build();
+        } else {
+            throw new DWBException(404, "No author in database exist for id = " + id);
+        }
     }
 
     @GET
-    public Response getAllAuthors() {
-        return Response.ok(authorService.getAllAuthors()).build();
+    public Response getAllAuthors() throws DWBException {
+        List<AuthorDTO> authors = authorService.getAllAuthors();
+        if(authors != null && !authors.isEmpty()) {
+            return Response.ok(authors).build();
+        } else {
+            throw new DWBException(404, "No authors in database exist!");
+        }
+
     }
 
     @POST
     public Response saveAuthor(AuthorDTO authorDTO) {
         boolean isSavedAuthor = authorService.saveAuthor(authorDTO);
         if (isSavedAuthor) {
-            return Response.ok().build();
+            return Response.status(Status.CREATED).build();
         } else {
             return Response.status(Status.BAD_REQUEST).build();
         }

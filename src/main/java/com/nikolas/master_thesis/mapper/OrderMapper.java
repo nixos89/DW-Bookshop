@@ -7,7 +7,7 @@ import org.jdbi.v3.core.statement.StatementContext;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OrderDTOMapper implements RowMapper<OrderDTO> {
+public class OrderMapper implements RowMapper<OrderDTO> {
 
     @Override
     public OrderDTO map(ResultSet rs, StatementContext ctx) throws SQLException {

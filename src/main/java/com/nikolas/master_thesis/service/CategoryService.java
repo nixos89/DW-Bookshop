@@ -23,7 +23,7 @@ public class CategoryService {
     public CategoryDTO getCategoryById(Long catId) {
         Category category = categoryDAO.getCategoryById2(catId);
         if (category != null) {
-            return new CategoryDTO(category.getCategoryId(), category.getName(), category.isDeleted());
+            return new CategoryDTO(category.getCategoryId(), category.getName(), category.getIsDeleted());
         } else {
             throw new StoreException("Error, no category found for id = " + catId + " in database!", HttpStatus.SC_NOT_FOUND);
         }
@@ -34,11 +34,11 @@ public class CategoryService {
         if (categories != null && !categories.isEmpty()) {
             List<CategoryDTO> categoryDTOS = new ArrayList<>();
             for (Category cat : categories) {
-                categoryDTOS.add(new CategoryDTO(cat.getCategoryId(), cat.getName(), cat.isDeleted()));
+                categoryDTOS.add(new CategoryDTO(cat.getCategoryId(), cat.getName(), cat.getIsDeleted()));
             }
             return categoryDTOS;
         } else {
-            throw new StoreException("Error, no categories in database!", HttpStatus.SC_NOT_FOUND);
+            return null;
         }
     }
 
@@ -46,21 +46,21 @@ public class CategoryService {
         return categoryDAO.createCategory(catDTO.getName(), catDTO.getIsDeleted());
     }
 
-    public boolean updateAuthor(CategoryDTO catDTO, Long catId) {
+    public boolean updateCategory(CategoryDTO catDTO, Long catId) {
         Category searchedCat = categoryDAO.getCategoryById2(catId);
         if (searchedCat != null) {
             return categoryDAO.updateCategory(catDTO.getCategoryId(), catDTO.getName(), catDTO.getIsDeleted());
         } else {
-            throw new StoreException("Exception, category with id = " + catId + " not found", HttpStatus.SC_NOT_FOUND);
+            return false;
         }
     }
 
-    public boolean deleteAuthor(Long catId) {
+    public boolean deleteCategory(Long catId) {
         Category cat = categoryDAO.getCategoryById2(catId);
         if (cat != null) {
             return categoryDAO.deleteCategory(catId);
         } else {
-            throw new StoreException("Exception, category for id = " + catId + " does NOT exist!", HttpStatus.SC_NOT_FOUND);
+            return false;
         }
     }
 

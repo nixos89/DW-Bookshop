@@ -1,8 +1,10 @@
 package com.nikolas.master_thesis.db;
 
 import com.nikolas.master_thesis.api.CategoryDTO;
+import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.core.Category;
+import com.nikolas.master_thesis.mapper.AuthorMapper;
 import com.nikolas.master_thesis.mapper.CategoryDTOMapper;
 import com.nikolas.master_thesis.mapper.CategoryMapper;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
@@ -43,6 +45,14 @@ public interface CategoryDAO {
     @UseRowMapper(CategoryMapper.class)
     @SqlQuery("SELECT category_id, name, is_deleted FROM category")
     List<Category> getAllCategories2();
+
+
+    @UseRowMapper(CategoryMapper.class)
+    @SqlQuery("SELECT c.category_id, c.name, c.is_deleted FROM category AS c " +
+            "LEFT JOIN category_book AS cb ON c.category_id = cb.category_id " +
+            "LEFT JOIN book AS b ON cb.book_id = b.book_id " +
+            "WHERE b.book_id = :bId")
+    List<Category> getCategoriesByBookId(@Bind("bId") Long bId);
 
     @GetGeneratedKeys
     @UseRowMapper(CategoryDTOMapper.class)

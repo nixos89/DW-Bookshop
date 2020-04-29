@@ -11,18 +11,11 @@ public class Book {
     private double price;
     private int amount;
     private boolean isDeleted;
-    private Set<Author> authors; // TODO: research HOW TO implement Many-To-Many relationships (next 2 collections) with JDBi3 - Step2
-    private Set<Category> categories; // same as TODO above (Many-To-Many)
-    private Set<OrderItem> orderItems; // TODO: research HOW TO implement One-To-Many relationship with JDBi3 - Step1
+    private Set<Author> authors;
+    private Set<Category> categories;
+    private Set<OrderItem> orderItems;
 
     public Book() {
-    }
-
-    public Book(String title, double price, int amount, boolean isDeleted) {
-        this.title = title;
-        this.price = price;
-        this.amount = amount;
-        this.isDeleted = isDeleted;
     }
 
     public Book(Long bookId, String title, double price, int amount, boolean isDeleted) {
@@ -31,6 +24,16 @@ public class Book {
         this.price = price;
         this.amount = amount;
         this.isDeleted = isDeleted;
+    }
+
+    public Book(Long bookId, String title, double price, int amount, boolean isDeleted, Set<Author> authors, Set<Category> categories) {
+        this.bookId = bookId;
+        this.title = title;
+        this.price = price;
+        this.amount = amount;
+        this.isDeleted = isDeleted;
+        this.authors = authors;
+        this.categories = categories;
     }
 
     public Long getBookId() {
@@ -65,7 +68,7 @@ public class Book {
         this.amount = amount;
     }
 
-    public boolean isDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 

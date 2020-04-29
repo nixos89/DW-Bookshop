@@ -1,12 +1,14 @@
 package com.nikolas.master_thesis.resources;
 
+import com.nikolas.master_thesis.api.AddUpdateBookDTO;
 import com.nikolas.master_thesis.api.BookDTO;
-import com.nikolas.master_thesis.db.AuthorDAO;
-import com.nikolas.master_thesis.db.BookDAO;
-import org.jdbi.v3.core.Jdbi;
+import com.nikolas.master_thesis.api.BookDTO2;
+import com.nikolas.master_thesis.service.BookService;
+import com.nikolas.master_thesis.util.DWBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,18 +20,16 @@ import java.util.List;
 public class BookResource {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BookResource.class);
-    private final BookDAO bookDAO;
-//    private final AuthorDAO authorDAO;
+    private final BookService bookService;
 
-    public BookResource(Jdbi jdbi) {
-//        authorDAO = jdbi.onDemand(AuthorDAO.class);
-        bookDAO = jdbi.onDemand(BookDAO.class);
-        bookDAO.createBookTable();
+    @Inject
+    public BookResource(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @GET
     public Response getAllBooks() {
-        List<BookDTO> books = bookDAO.getAllBooks();
+        List<BookDTO2> books = bookService.getAllBooks();
         if (books != null) {
             return Response.ok(books).build();
         } else {
@@ -40,54 +40,47 @@ public class BookResource {
 
     @GET
     @Path("/{id}")
-    public Response getBookById(@PathParam("id") Long id) {
-        BookDTO book = bookDAO.getBookById(id);
+    public Response getBookById(@PathParam("id") Long id) throws DWBException {
+        BookDTO2 book = bookService.getBookById(id);
         if (book != null) {
             return Response.ok(book).build();
         } else {
-            return Response.status(Status.NOT_FOUND).build();
+            throw new DWBException(404, "Error, no book with id = " + id);
         }
     }
 
-    @GET
-    @Path("/byAuthor/{authorId}")
-    public Response getBooksByAuthorId(@PathParam("authorId") Long id) {
-        List<BookDTO> books = bookDAO.getBooksByAuthorId(id);
-        if (books != null) {
-            return Response.ok(books).build();
-        } else {
-            return Response.status(Status.NOT_FOUND).build();
-        }
-    }
+//    @GET
+//    @Path("/byAuthor/{authorId}")
+//    public Response getBooksByAuthorId(@PathParam("authorId") Long id) {
+//        List<BookDTO> books = bookDAO.getBooksByAuthorId(id);
+//        if (books != null) {
+//            return Response.ok(books).build();
+//        } else {
+//            return Response.status(Status.NOT_FOUND).build();
+//        }
+//    }
 
 
     @POST
-    public Response saveBook(BookDTO bookDTO) {
-        BookDTO bookDTOSaved = bookDAO.createBookDefault(bookDTO);
-        if (bookDTOSaved != null) {
-            return Response.ok(bookDTOSaved).build();
+    public Response saveBook(AddUpdateBookDTO bookDTO) {
+        if (bookService.createBook(bookDTO)) {
+            return Response.status(Status.CREATED).build();
         } else {
-            return Response.status(Status.NOT_IMPLEMENTED).build();
+            return Response.status(Status.BAD_REQUEST).build();
         }
     }
 
 
     @PUT
     @Path("/{id}")
-    public Response updateBook(@PathParam("id") Long bookId, BookDTO bookDTO) {
-        BookDTO searchedBook = bookDAO.getBookById(bookId);
+    public Response updateBook(@PathParam("id") Long bookId, AddUpdateBookDTO bookDTO) {
+        BookDTO2 searchedBook = bookService.getBookById(bookId);
         if (searchedBook != null) {
-            BookDTO updateBookDTODefault = null;
-            try {
-                updateBookDTODefault = bookDAO.updateBookDefault(bookDTO);
-            } catch (Exception e) {
-                System.out.println(" ======== ERROR, exception occurred! Exception " + e.getMessage() + " ======== ");
-                e.printStackTrace();
-            }
-            if (updateBookDTODefault != null) {
-                return Response.ok(updateBookDTODefault).build();
+            boolean isUpdated = bookService.updateBook(bookDTO, bookId);
+            if (isUpdated) {
+                return Response.noContent().build();
             } else {
-                return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+                return Response.status(Status.BAD_REQUEST).build();
             }
         } else {
             return Response.status(Status.NOT_MODIFIED).build();
@@ -98,13 +91,12 @@ public class BookResource {
     @DELETE
     @Path("/{id}")
     public Response deleteBook(@PathParam("id") Long bookId) {
-        BookDTO book = bookDAO.getBookById(bookId);
+        BookDTO2 book = bookService.getBookById(bookId);
         if (book != null) {
-            boolean isDeleted = bookDAO.deleteBook(bookId);
-            if (isDeleted) {
+            if (bookService.deleteBook(bookId)) {
                 return Response.noContent().build();
             } else {
-                return Response.status(Status.NOT_MODIFIED).build();
+                return Response.status(Status.BAD_REQUEST).build();
             }
         } else {
             return Response.status(Status.NOT_FOUND).build();

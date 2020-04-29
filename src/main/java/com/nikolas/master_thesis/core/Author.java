@@ -8,7 +8,7 @@ public class Author {
     private Long authorId;
     private String firstName;
     private String lastName;
-    private Set<Book> books; // TODO: research HOW TO implement ManyToMany relationship with JDBi3
+    private Set<Book> books;
 
     public Author() { }
 
@@ -21,6 +21,13 @@ public class Author {
         this.authorId = authorId;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+    public Author(Long authorId, String firstName, String lastName, Set<Book> books) {
+        this.authorId = authorId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.books = books;
     }
 
     public Long getAuthorId() {

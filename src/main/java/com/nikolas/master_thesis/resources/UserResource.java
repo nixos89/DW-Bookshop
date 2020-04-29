@@ -2,8 +2,10 @@ package com.nikolas.master_thesis.resources;
 
 import com.nikolas.master_thesis.db.RoleDAO;
 import com.nikolas.master_thesis.db.UserDAO;
+import com.nikolas.master_thesis.service.UserService;
 import org.jdbi.v3.core.Jdbi;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,14 +16,11 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
     
-    private final UserDAO userDAO;
-    private final RoleDAO roleDAO;
+    private final UserService userService;
 
-    public UserResource(Jdbi jdbi) {
-        this.roleDAO = jdbi.onDemand(RoleDAO.class);
-        this.userDAO = jdbi.onDemand(UserDAO.class);
-        roleDAO.createTableRole();
-        userDAO.createUserTable();
+    @Inject
+    public UserResource(UserService userService) {
+        this.userService = userService;
     }
 
     @GET

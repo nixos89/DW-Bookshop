@@ -24,7 +24,7 @@ public class AuthorService {
         if (author != null) {
             return new AuthorDTO(author.getAuthorId(), author.getFirstName(), author.getLastName());
         } else {
-            throw new StoreException("Exception, author for id = " + authorId + " does NOT exist!", HttpStatus.SC_NOT_FOUND);
+            return null;
         }
     }
 
@@ -48,7 +48,7 @@ public class AuthorService {
         if (searchedAuthor != null) {
             return authorDAO.updateAuthor(authorId, authorDTO.getFirstName(), authorDTO.getLastName());
         } else {
-            throw new StoreException("Exception, author with id = " + authorId + "not found", HttpStatus.SC_NOT_FOUND);
+            return false;
         }
     }
 

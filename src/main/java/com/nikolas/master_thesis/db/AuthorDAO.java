@@ -1,9 +1,7 @@
 package com.nikolas.master_thesis.db;
 
-import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
-import com.nikolas.master_thesis.mapper.AuthorDTOMapper;
 import com.nikolas.master_thesis.mapper.AuthorMapper;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -37,13 +35,17 @@ public interface AuthorDAO {
     @SqlQuery("SELECT author_id, first_name, last_name FROM Author WHERE Author.author_id = ?")
     Author getAuthorById(Long authorId);
 
-    @UseRowMapper(AuthorDTOMapper.class)
-    @SqlQuery("SELECT author_id, first_name, last_name FROM Author")
-    List<AuthorDTO> getAllAuthors();
-
     @UseRowMapper(AuthorMapper.class)
     @SqlQuery("SELECT author_id, first_name, last_name FROM Author")
     List<Author> getAllAuthorPojos();
+
+    @UseRowMapper(AuthorMapper.class)
+    @SqlQuery("SELECT a.author_id, a.first_name, a.last_name FROM Author AS a " +
+            "LEFT JOIN author_book AS ab ON a.author_id = ab.author_id " +
+            "LEFT JOIN book AS b ON ab.book_id = b.book_id " +
+            "WHERE b.book_id = :bId")
+    List<Author> getAuthorsByBookId(@Bind("bId") Long bId);
+
 
     @SqlUpdate("UPDATE Author SET first_name = :first_name, last_name = :last_name WHERE author_id = :author_id")
     boolean updateAuthor(@Bind("author_id") Long authorId, @Bind("first_name") String firstName, @Bind("last_name") String lastName);

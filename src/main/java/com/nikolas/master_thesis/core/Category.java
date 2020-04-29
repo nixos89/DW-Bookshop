@@ -9,21 +9,23 @@ public class Category {
     private Long categoryId;
     private String name;
     private boolean isDeleted;
-    private Set<Book> books; // @ManyToMany
+    private Set<Book> books;
 
     public Category() {
         books = new HashSet<>();
-    }
-
-    public Category(String name, boolean isDeleted) {
-        this.name = name;
-        this.isDeleted = isDeleted;
     }
 
     public Category(Long categoryId, String name, boolean isDeleted) {
         this.categoryId = categoryId;
         this.name = name;
         this.isDeleted = isDeleted;
+    }
+
+    public Category(Long categoryId, String name, boolean isDeleted, Set<Book> books) {
+        this.categoryId = categoryId;
+        this.name = name;
+        this.isDeleted = isDeleted;
+        this.books = books;
     }
 
     public Long getCategoryId() {
@@ -42,12 +44,12 @@ public class Category {
         this.name = name;
     }
 
-    public boolean isDeleted() {
+    public boolean getIsDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public Set<Book> getBooks() {
@@ -71,5 +73,14 @@ public class Category {
     @Override
     public int hashCode() {
         return Objects.hash(categoryId, name, isDeleted);
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryId=" + categoryId +
+                ", name='" + name + '\'' +
+                ", isDeleted=" + isDeleted +
+                '}';
     }
 }

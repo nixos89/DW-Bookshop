@@ -7,7 +7,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 public interface RoleDAO {
 
     @RegisterBeanMapper(Role.class)
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS Role(role_id BIGSERIAL PRIMARY KEY, name VARCHAR(30))")
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Roles(role_id BIGSERIAL PRIMARY KEY, name VARCHAR(30))")
     void createTableRole();
 
 }

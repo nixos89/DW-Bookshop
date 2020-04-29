@@ -7,6 +7,7 @@ public class OrderItem {
 
     private Long orderItemId;
     private int amount;
+    // FIXME: change to ID references form object references
     private Book book; // many-to-one
     private Order order; // many-to-one
 

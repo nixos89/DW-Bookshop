@@ -5,31 +5,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookDTO {
+public class AddUpdateBookDTO {
     private Long bookId;
     private String title;
     private double price;
     private int amount;
     private boolean isDeleted;
-    // FIXME: change List<Long> to List<AuthorDTO> and List<CategoryDTO> respectively
-    private List<Long> authors; // Many-To-Many
-    private List<Long> categories; // Many-To-Many
+    private List<Long> authors;
+    private List<Long> categories;
 
-    public BookDTO() {
+    public AddUpdateBookDTO() {
         authors = new ArrayList<>();
         categories = new ArrayList<>();
     }
 
-    public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted) {
-        this.bookId = bookId;
-        this.title = title;
-        this.price = price;
-        this.amount = amount;
-        this.isDeleted = isDeleted;
-    }
 
-    public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
-                   List<Long> authors, List<Long> categories) {
+    public AddUpdateBookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
+                            List<Long> authors, List<Long> categories) {
         this.bookId = bookId;
         this.title = title;
         this.price = price;
@@ -64,23 +56,54 @@ public class BookDTO {
         return isDeleted;
     }
 
-    @JsonProperty("author_ids")
+    @JsonProperty("authors")
     public List<Long> getAuthors() {
         return authors;
     }
 
-    @JsonProperty("category_ids")
+    @JsonProperty("categories")
     public List<Long> getCategories() {
         return categories;
     }
 
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public void setAuthors(List<Long> authors) {
+        this.authors = authors;
+    }
+
+    public void setCategories(List<Long> categories) {
+        this.categories = categories;
+    }
+
     @Override
     public String toString() {
-        return "BookDTO{" +
+        return "BookDTO2 {" +
+                "bookId=" + bookId +
                 ", title='" + title + '\'' +
                 ", price=" + price +
                 ", amount=" + amount +
                 ", isDeleted=" + isDeleted +
+                ", authors=" + authors +
+                ", categories=" + categories +
                 '}';
     }
 }
