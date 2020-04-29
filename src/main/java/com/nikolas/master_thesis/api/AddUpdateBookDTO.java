@@ -1,10 +1,16 @@
 package com.nikolas.master_thesis.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AddUpdateBookDTO {
     private Long bookId;
     private String title;
@@ -14,11 +20,11 @@ public class AddUpdateBookDTO {
     private List<Long> authors;
     private List<Long> categories;
 
+    /*
     public AddUpdateBookDTO() {
         authors = new ArrayList<>();
         categories = new ArrayList<>();
     }
-
 
     public AddUpdateBookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
                             List<Long> authors, List<Long> categories) {
@@ -106,4 +112,6 @@ public class AddUpdateBookDTO {
                 ", categories=" + categories +
                 '}';
     }
+
+     */
 }

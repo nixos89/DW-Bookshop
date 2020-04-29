@@ -21,9 +21,9 @@ public class CategoryService {
     }
 
     public CategoryDTO getCategoryById(Long catId) {
-        Category category = categoryDAO.getCategoryById2(catId);
+        Category category = categoryDAO.getCategoryById(catId);
         if (category != null) {
-            return new CategoryDTO(category.getCategoryId(), category.getName(), category.getIsDeleted());
+            return new CategoryDTO(category.getCategoryId(), category.getName(), category.isDeleted());
         } else {
             throw new StoreException("Error, no category found for id = " + catId + " in database!", HttpStatus.SC_NOT_FOUND);
         }
@@ -34,7 +34,7 @@ public class CategoryService {
         if (categories != null && !categories.isEmpty()) {
             List<CategoryDTO> categoryDTOS = new ArrayList<>();
             for (Category cat : categories) {
-                categoryDTOS.add(new CategoryDTO(cat.getCategoryId(), cat.getName(), cat.getIsDeleted()));
+                categoryDTOS.add(new CategoryDTO(cat.getCategoryId(), cat.getName(), cat.isDeleted()));
             }
             return categoryDTOS;
         } else {
@@ -43,20 +43,20 @@ public class CategoryService {
     }
 
     public boolean saveCategory(CategoryDTO catDTO) {
-        return categoryDAO.createCategory(catDTO.getName(), catDTO.getIsDeleted());
+        return categoryDAO.createCategory(catDTO.getName(), catDTO.isDeleted());
     }
 
     public boolean updateCategory(CategoryDTO catDTO, Long catId) {
-        Category searchedCat = categoryDAO.getCategoryById2(catId);
+        Category searchedCat = categoryDAO.getCategoryById(catId);
         if (searchedCat != null) {
-            return categoryDAO.updateCategory(catDTO.getCategoryId(), catDTO.getName(), catDTO.getIsDeleted());
+            return categoryDAO.updateCategory(catDTO.getCategoryId(), catDTO.getName(), catDTO.isDeleted());
         } else {
             return false;
         }
     }
 
     public boolean deleteCategory(Long catId) {
-        Category cat = categoryDAO.getCategoryById2(catId);
+        Category cat = categoryDAO.getCategoryById(catId);
         if (cat != null) {
             return categoryDAO.deleteCategory(catId);
         } else {

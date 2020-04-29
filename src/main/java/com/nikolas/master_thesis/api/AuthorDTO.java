@@ -1,58 +1,20 @@
 package com.nikolas.master_thesis.api;
 
-/* contains getter methods, but NOT ANY setter methods
- * due to it's Thread safety */
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
+@Value
+@Builder
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AuthorDTO {
 
-    private Long authorId;
+    Long authorId;
+    String firstName;
+    String lastName;
 
-    private String firstName;
-
-    private String lastName;
-
-    public AuthorDTO() {
-    }
-
-    public AuthorDTO(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public AuthorDTO(Long authorId, String firstName, String lastName) {
-        this.authorId = authorId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    @JsonProperty("author_id")
-    public Long getAuthorId() {
-        return authorId;
-    }
-
-    @JsonProperty("first_name")
-    public String getFirstName() {
-        return firstName;
-    }
-
-    @JsonProperty("last_name")
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 }

@@ -21,7 +21,6 @@ public class BookResource {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BookResource.class);
     private final BookService bookService;
-
     @Inject
     public BookResource(BookService bookService) {
         this.bookService = bookService;

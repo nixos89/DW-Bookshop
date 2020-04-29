@@ -1,6 +1,7 @@
 package com.nikolas.master_thesis.service;
 
-import com.nikolas.master_thesis.api.*;
+import com.nikolas.master_thesis.api.AddUpdateBookDTO;
+import com.nikolas.master_thesis.api.BookDTO2;
 import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.core.Category;
@@ -11,8 +12,6 @@ import com.nikolas.master_thesis.mapper.BookMapper;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.List;
 
 public class BookService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
     private final BookDAO bookDAO;
     private final CategoryDAO categoryDAO;
     private final AuthorDAO authorDAO;
@@ -40,7 +38,7 @@ public class BookService {
     public List<BookDTO2> getAllBooks() {
         Handle handle = jdbi.open();
 
-        List<Book> books = handle.createQuery("SELECT b.book_id, b.title, b.price, b.amount, b.is_deleted FROM book b")
+        List<Book> books = handle.createQuery("SELECT b.book_id, b.title, b.price, b.amount, b.is_deleted FROM book b ORDER BY b.book_id")
                 .map(new BookMapper()).list();
 
         List<BookDTO2> bookDTO2List = new ArrayList<>();
@@ -82,7 +80,7 @@ public class BookService {
         Handle handle = jdbi.open();
         Book savedBook = handle.createUpdate("INSERT INTO Book(title, price, amount, is_deleted) VALUES(:title, :price, :amount, :is_deleted)")
                 .bind("title", bookDTOToSave.getTitle()).bind("price", bookDTOToSave.getPrice())
-                .bind("amount", bookDTOToSave.getAmount()).bind("is_deleted", bookDTOToSave.getIsDeleted())
+                .bind("amount", bookDTOToSave.getAmount()).bind("is_deleted", bookDTOToSave.isDeleted())
                 .executeAndReturnGeneratedKeys()
                 .map((rs, ctx) -> new Book(rs.getLong("book_id"), rs.getString("title"), rs.getDouble("price"),
                         rs.getInt("amount"), rs.getBoolean("is_deleted")
@@ -107,7 +105,7 @@ public class BookService {
             try {
                 Handle handle = jdbi.open();
                 boolean isUpdated = bookDAO.updateBookDTO(bookId, bookDTOToUpdate.getTitle(),
-                            bookDTOToUpdate.getPrice(), bookDTOToUpdate.getAmount(), bookDTOToUpdate.getIsDeleted());
+                            bookDTOToUpdate.getPrice(), bookDTOToUpdate.getAmount(), bookDTOToUpdate.isDeleted());
                 if (!isUpdated) {
                     throw new Exception("Book has NOT been updated! Status: " + Response.Status.NOT_MODIFIED);
                 } else {
