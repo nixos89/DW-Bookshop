@@ -27,9 +27,9 @@ public interface AuthorDAO {
 
 
     @GetGeneratedKeys
-    @UseRowMapper(AuthorMapper.class) // TODO: Implement map() method!!!
+    @UseRowMapper(AuthorMapper.class)
     @SqlUpdate("INSERT INTO Author(first_name, last_name) VALUES(?, ?) ")
-    Author createAuthor(String firstName, String lastName); // switched return type from AuthorDTO to boolean
+    boolean createAuthor(String firstName, String lastName); // switched return type from AuthorDTO to boolean
 
     @UseRowMapper(AuthorMapper.class)
     @SqlQuery("SELECT author_id, first_name, last_name FROM Author WHERE Author.author_id = ?")
@@ -42,8 +42,7 @@ public interface AuthorDAO {
     @UseRowMapper(AuthorMapper.class)
     @SqlQuery("SELECT a.author_id, a.first_name, a.last_name FROM Author AS a " +
             "LEFT JOIN author_book AS ab ON a.author_id = ab.author_id " +
-            "LEFT JOIN book AS b ON ab.book_id = b.book_id " +
-            "WHERE b.book_id = :bId")
+            "WHERE ab.book_id = :bId")
     List<Author> getAuthorsByBookId(@Bind("bId") Long bId);
 
 

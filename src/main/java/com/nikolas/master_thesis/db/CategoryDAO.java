@@ -34,14 +34,13 @@ public interface CategoryDAO {
 
     @UseRowMapper(CategoryMapper.class)
     @SqlQuery("SELECT category_id, name, is_deleted FROM category")
-    List<Category> getAllCategories2();
+    List<Category> getAllCategories();
 
 
     @UseRowMapper(CategoryMapper.class)
     @SqlQuery("SELECT c.category_id, c.name, c.is_deleted FROM category AS c " +
             "LEFT JOIN category_book AS cb ON c.category_id = cb.category_id " +
-            "LEFT JOIN book AS b ON cb.book_id = b.book_id " +
-            "WHERE b.book_id = :bId")
+            "WHERE cb.book_id = :bId")
     List<Category> getCategoriesByBookId(@Bind("bId") Long bId);
 
     @GetGeneratedKeys

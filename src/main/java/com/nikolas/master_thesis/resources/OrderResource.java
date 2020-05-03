@@ -1,13 +1,12 @@
 package com.nikolas.master_thesis.resources;
 
-import com.nikolas.master_thesis.db.OrderDAO;
+import com.nikolas.master_thesis.api.OrderListDTO;
+import com.nikolas.master_thesis.api.OrderReportDTO;
+import com.nikolas.master_thesis.api.OrderResponseDTO;
 import com.nikolas.master_thesis.service.OrderService;
-import org.jdbi.v3.core.Jdbi;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -23,14 +22,24 @@ public class OrderResource {
         this.orderService = orderService;
     }
 
+    @POST
+    public Response saveOrder(OrderListDTO orderRequest, @QueryParam(value = "username") String username){
+        OrderResponseDTO orderResponseDTO = orderService.addOrder(orderRequest, username);
+        if(orderResponseDTO != null) {
+            return Response.ok(orderResponseDTO).build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+    }
+
+
     @GET
     public Response getAllOrders() {
-//        List<OrderDTO> orders = orderDAO.getAllOrders();
-//        if (orders != null) {
-//            return Response.ok(orders).build();
-//        } else {
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        }
-        return null;
+        OrderReportDTO orderReportDTO = orderService.getAllOrders();
+        if (orderReportDTO != null) {
+            return Response.ok(orderReportDTO).build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
     }
 }

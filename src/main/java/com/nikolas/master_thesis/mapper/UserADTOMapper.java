@@ -1,6 +1,6 @@
 package com.nikolas.master_thesis.mapper;
 
-import com.nikolas.master_thesis.api.UserADTO;
+import com.nikolas.master_thesis.examples.UserADTO;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

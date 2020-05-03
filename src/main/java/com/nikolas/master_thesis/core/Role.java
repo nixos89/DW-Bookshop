@@ -15,15 +15,12 @@ import java.util.Set;
 public class Role {
 
     private Long roleId;
+    @NotNull private String name;
+    private Set<User> users;
 
-    @ColumnName("role_name")
-    @NotNull
-    private String role_name;
-    private Set<User> users;// TODO: research HOW TO implement One-To-Many relationship with JDBi3
-
-    public Role(Long roleId, String role_name) {
+    public Role(Long roleId, String name) {
         this.roleId = roleId;
-        this.role_name = role_name;
+        this.name = name;
     }
 
 }

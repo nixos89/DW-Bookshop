@@ -21,5 +21,11 @@ public class BookDTO2 {
     List<AuthorDTO> authors;
     List<CategoryDTO> categories;
 
-
+//    public BookDTO2(Long bookId, String title, double price, int amount, boolean isDeleted) {
+//        this.bookId = bookId;
+//        this.title = title;
+//        this.price = price;
+//        this.amount = amount;
+//        this.isDeleted = isDeleted;
+//    }
 }

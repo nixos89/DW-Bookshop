@@ -51,13 +51,11 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final BookService bookService = new BookService(jdbi, bookMSMapper);
         final CategoryService categoryService = new CategoryService(jdbi);
         final AuthorService authorService = new AuthorService(jdbi);
-        final UserService userService = new UserService(jdbi);
-        final OrderService orderService = new OrderService(jdbi);
+        final OrderService orderService = new OrderService(jdbi, bookMSMapper);
 
         final BookResource bookResource = new BookResource(bookService);
         final AuthorResource authorResource = new AuthorResource(authorService); // changed constructor param
         final CategoryResource categoryResource = new CategoryResource(categoryService);
-        final UserResource userResource = new UserResource(userService);
         final OrderResource orderResource = new OrderResource(orderService);
 //        final UserAResource userAResource = new UserAResource(jdbi);
 //        final AccountResource accountResource = new AccountResource(jdbi);
@@ -69,7 +67,6 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         environment.jersey().register(bookResource);
         environment.jersey().register(categoryResource);
         environment.jersey().register(authorResource);
-        environment.jersey().register(userResource);
         environment.jersey().register(orderResource);
 //        environment.jersey().register(accountResource);
 //        environment.jersey().register(userAResource);

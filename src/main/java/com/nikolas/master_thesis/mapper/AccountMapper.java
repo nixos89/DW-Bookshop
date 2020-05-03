@@ -1,7 +1,7 @@
 package com.nikolas.master_thesis.mapper;
 
-import com.nikolas.master_thesis.core.Account;
-import com.nikolas.master_thesis.core.UserA;
+import com.nikolas.master_thesis.examples.Account;
+import com.nikolas.master_thesis.examples.UserA;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

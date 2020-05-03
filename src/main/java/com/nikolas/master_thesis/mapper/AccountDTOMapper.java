@@ -1,6 +1,6 @@
 package com.nikolas.master_thesis.mapper;
 
-import com.nikolas.master_thesis.api.AccountDTO;
+import com.nikolas.master_thesis.examples.AccountDTO;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
 

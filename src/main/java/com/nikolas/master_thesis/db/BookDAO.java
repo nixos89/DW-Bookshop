@@ -6,6 +6,8 @@ import com.nikolas.master_thesis.mapper.BookMapper;
 import org.jdbi.v3.sqlobject.SqlObject;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
+import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 
@@ -16,6 +18,19 @@ public interface BookDAO extends SqlObject {
     @RegisterBeanMapper(Book.class)
     @SqlUpdate("CREATE TABLE IF NOT EXISTS Book( book_id BIGSERIAL PRIMARY KEY, title VARCHAR(255), price double precision, amount INTEGER, is_deleted boolean)")
     void createBookTable();
+
+    @UseRowMapper(BookMapper.class)
+    @SqlQuery("SELECT b.book_id, b.title, b.price, b.amount, b.is_deleted FROM book b WHERE b.book_id = :bId")
+    Book getBookById(@Bind("bId") Long bookId);
+
+    @UseRowMapper(BookMapper.class)
+    @SqlQuery("SELECT b.book_id, b.title, b.price, b.amount, b.is_deleted FROM book b ORDER BY b.book_id")
+    List<Book> getAllBooks();
+
+    @GetGeneratedKeys
+    @UseRowMapper(BookMapper.class)
+    @SqlUpdate("INSERT INTO Book(title, price, amount, is_deleted) VALUES(:title, :price, :amount, :is_deleted)")
+    Book createBook(@Bind("title") String title, @Bind("price") double price, @Bind("amount") int amount, @Bind("is_deleted") boolean isDeleted);
 
     @SqlUpdate("INSERT INTO author_book(author_id, book_id) VALUES (?, ?)")
     void insertAuthorBook(Long authorId, Long bookId);

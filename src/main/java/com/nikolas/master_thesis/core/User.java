@@ -24,10 +24,9 @@ public class User {
     @Pattern(regexp = ".+@.+\\.[a-z]+")
     private String email;
 
-    @Encoded
     private String password;
-    private Role role; // Many-To-One
-    private Set<Order> orders; // One-To-Many
+    private Role role;
+    private Set<Order> orders;
 
     public User(Long userId, String firstName, String lastName, String username, String email, String password, Role role) {
         this.userId = userId;

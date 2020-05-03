@@ -2,20 +2,23 @@ package com.nikolas.master_thesis.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+// FIXME: impelemnt Lombok annotations to behave as Immutable POJO
 public class OrderItemDTO {
     private Long orderItemId;
     private int amount;
-    private Long bookId;
+    private BookDTO2 book;
     private Long orderId;
+    private double totalOrderItemPrice;
 
     public OrderItemDTO() {
     }
 
-    public OrderItemDTO(Long orderItemId, int amount, Long bookId, Long orderId) {
+    public OrderItemDTO(Long orderItemId, int amount, BookDTO2 book, Long orderId, double totalOrderItemPrice) {
         this.orderItemId = orderItemId;
         this.amount = amount;
-        this.bookId = bookId;
+        this.book = book;
         this.orderId = orderId;
+        this.totalOrderItemPrice = totalOrderItemPrice;
     }
 
     @JsonProperty("order_item_id")
@@ -28,13 +31,18 @@ public class OrderItemDTO {
         return amount;
     }
 
-    @JsonProperty("book_id")
-    public Long getBookId() {
-        return bookId;
+    @JsonProperty("book")
+    public BookDTO2 getBook() {
+        return book;
     }
 
     @JsonProperty("order_id")
     public Long getOrderId() {
         return orderId;
+    }
+
+
+    public double getTotalOrderItemPrice() {
+        return totalOrderItemPrice;
     }
 }
