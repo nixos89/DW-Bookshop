@@ -14,6 +14,6 @@ public class CategoryDTO {
 
     Long categoryId;
     String name;
-    boolean isDeleted;
+    boolean deleted;
 
 }

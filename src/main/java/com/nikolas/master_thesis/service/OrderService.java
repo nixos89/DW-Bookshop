@@ -5,10 +5,14 @@ import com.nikolas.master_thesis.core.*;
 import com.nikolas.master_thesis.db.*;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
 import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Handles;
 import org.jdbi.v3.core.Jdbi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -18,7 +22,7 @@ public class OrderService {
     //    private final OrderDAO orderDAO;
     private final BookMSMapper bookMSMapper;
     private final Jdbi jdbi;
-//    private final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
 
     public OrderService(Jdbi jdbi, BookMSMapper bookMSMapper) {
         this.bookMSMapper = bookMSMapper;
@@ -35,12 +39,11 @@ public class OrderService {
             Set<OrderItem> orderItems = new HashSet<>();
             Order order = new Order();
             if (orderRequest != null) {
-                BookDAO bookDAO = handle.attach(BookDAO.class);
-                UserDAO userDAO = handle.attach(UserDAO.class);
-                OrderDAO orderDAO = handle.attach(OrderDAO.class);
-                OrderItemDAO orderItemDAO = handle.attach(OrderItemDAO.class);
                 handle.begin();
-                User user = userDAO.findUserByUsername(username);//.orElse(null);
+                handle.getConfig(Handles.class).setForceEndTransactions(false);
+                UserDAO userDAO = handle.attach(UserDAO.class);
+                User user = userDAO.findUserByUsername(username);
+                BookDAO bookDAO = handle.attach(BookDAO.class);
                 for (AddOrderDTO addOrder : orderRequest.getOrders()) {
                     Book book = bookDAO.getBookById(addOrder.getBookId());
                     if (book == null) {
@@ -65,20 +68,21 @@ public class OrderService {
                         orderItems.add(orderItem);
                     }
                 }
+                OrderDAO orderDAO = handle.attach(OrderDAO.class);
                 order.setOrderItems(orderItems);
                 order = orderDAO.createOrder(order.getTotal(), order.getOrderDate(), user.getUserId());
+                OrderItemDAO orderItemDAO = handle.attach(OrderItemDAO.class);
                 for (OrderItem oi : orderItems) {
                     orderItemDAO.createOrderItem(oi.getAmount(), oi.getBook().getBookId(), order.getOrderId());
                 }
                 handle.commit();
                 return new OrderResponseDTO(order.getOrderId());
             } else {
-                handle.rollback();
                 throw new Exception("Error, orderRequest is EMPTY!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return null;
         } finally {
             handle.close();
@@ -86,21 +90,21 @@ public class OrderService {
     }
 
 
-    public OrderReportDTO getAllOrders() {
+    public OrderReportDTO getAllOrders(){
         Handle handle = jdbi.open();
-        OrderDAO orderDAO = handle.attach(OrderDAO.class);
-        OrderItemDAO orderItemDAO = handle.attach(OrderItemDAO.class);
-        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
-        BookDAO bookDAO = handle.attach(BookDAO.class);
-        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
             handle.begin();
             List<OrderDTO> orderDTOList = new LinkedList<>();
             List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
+            OrderDAO orderDAO = handle.attach(OrderDAO.class);
             List<Order> orders = orderDAO.getAllOrders();
             OrderDTO orderDTO = new OrderDTO();
             if (orders != null && !orders.isEmpty()) {
                 double orderPrice;
+                AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
+                BookDAO bookDAO = handle.attach(BookDAO.class);
+                CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
+                OrderItemDAO orderItemDAO = handle.attach(OrderItemDAO.class);
                 for (Order order : orders) {
                     Date orderDate = order.getOrderDate();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -140,8 +144,8 @@ public class OrderService {
             handle.commit();
             return orderReportDTO;
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return null;
         } finally {
             handle.close();

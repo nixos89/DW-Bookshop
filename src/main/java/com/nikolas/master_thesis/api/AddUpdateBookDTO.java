@@ -17,8 +17,7 @@ public class AddUpdateBookDTO {
     private String title;
     private double price;
     private int amount;
-    @JsonProperty("deleted")
-    private boolean isDeleted;
+    private boolean deleted;
     private List<Long> authors;
     private List<Long> categories;
 

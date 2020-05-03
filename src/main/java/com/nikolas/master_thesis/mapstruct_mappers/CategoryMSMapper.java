@@ -13,7 +13,7 @@ public interface CategoryMSMapper {
 
     CategoryDTO fromCategory(Category category);
 
-    @Mapping(source = "deleted", target="deleted")
+//    @Mapping(source = "deleted", target="deleted")
     @Mapping(target = "books", ignore = true)
     Category toCategory(CategoryDTO categoryDTO);
 }

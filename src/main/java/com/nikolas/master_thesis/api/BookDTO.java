@@ -10,31 +10,30 @@ public class BookDTO {
     private String title;
     private double price;
     private int amount;
-    private boolean isDeleted;
-    // FIXME: change List<Long> to List<AuthorDTO> and List<CategoryDTO> respectively
-    private List<Long> authors; // Many-To-Many
-    private List<Long> categories; // Many-To-Many
+    private boolean deleted;
+    private List<Long> authors;
+    private List<Long> categories;
 
     public BookDTO() {
         authors = new ArrayList<>();
         categories = new ArrayList<>();
     }
 
-    public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted) {
+    public BookDTO(Long bookId, String title, double price, int amount, boolean deleted) {
         this.bookId = bookId;
         this.title = title;
         this.price = price;
         this.amount = amount;
-        this.isDeleted = isDeleted;
+        this.deleted = deleted;
     }
 
-    public BookDTO(Long bookId, String title, double price, int amount, boolean isDeleted,
+    public BookDTO(Long bookId, String title, double price, int amount, boolean deleted,
                    List<Long> authors, List<Long> categories) {
         this.bookId = bookId;
         this.title = title;
         this.price = price;
         this.amount = amount;
-        this.isDeleted = isDeleted;
+        this.deleted = deleted;
         this.authors = authors;
         this.categories = categories;
     }
@@ -59,9 +58,9 @@ public class BookDTO {
         return amount;
     }
 
-    @JsonProperty("is_deleted")
-    public boolean getIsDeleted() {
-        return isDeleted;
+    @JsonProperty("deleted")
+    public boolean isDeleted() {
+        return deleted;
     }
 
     @JsonProperty("author_ids")
@@ -80,7 +79,7 @@ public class BookDTO {
                 ", title='" + title + '\'' +
                 ", price=" + price +
                 ", amount=" + amount +
-                ", isDeleted=" + isDeleted +
+                ", isDeleted=" + deleted +
                 '}';
     }
 }

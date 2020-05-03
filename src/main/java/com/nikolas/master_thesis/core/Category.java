@@ -13,13 +13,13 @@ public class Category {
 
     private Long categoryId;
     private String name;
-    private boolean isDeleted;
+    private boolean deleted;
     private Set<Book> books;
 
-    public Category(Long categoryId, String name, boolean isDeleted) {
+    public Category(Long categoryId, String name, boolean deleted) {
         this.categoryId = categoryId;
         this.name = name;
-        this.isDeleted = isDeleted;
+        this.deleted = deleted;
     }
 
 }

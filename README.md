@@ -12,5 +12,6 @@ How to start the DW-Bookshop application
   [`http://localhost:8080/api/books`](http://localhost:8080/api/books) <br/>
   [`http://localhost:8080/api/categories`](http://localhost:8080/api/categories) <br/>
   [`http://localhost:8080/api/authors`](http://localhost:8080/api/authors) <br/>
+  [`http://localhost:8080/api/orders`](http://localhost:8080/api/orders) <br/>
   
 For other urls check Resource classes in this [package](https://github.com/nixos89/DW-Bookshop/tree/master/src/main/java/com/nikolas/master_thesis/resources).  

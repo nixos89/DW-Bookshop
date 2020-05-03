@@ -23,15 +23,15 @@ public class AuthorService {
 
     public AuthorDTO getAuthorById(Long authorId) {
         Handle handle = jdbi.open();
+        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
             handle.begin();
             Author author = authorDAO.getAuthorById(authorId);
-            handle.commit();
             if (author != null) {
+                handle.commit();
                 return new AuthorDTO(author.getAuthorId(), author.getFirstName(), author.getLastName());
             } else {
-                return null;
+                throw new Exception("Error, author with id = " + authorId + " does NOT exist in database!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -45,8 +45,8 @@ public class AuthorService {
 
     public List<AuthorDTO> getAllAuthors() {
         Handle handle = jdbi.open();
+        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
             handle.begin();
             List<Author> authors = authorDAO.getAllAuthorPojos();
             handle.commit();
@@ -58,12 +58,11 @@ public class AuthorService {
                 }
                 return authorDTOList;
             } else {
-                handle.rollback();
-                return null;
+                throw new Exception("Error, authors are NULL or they do NOT exist in database!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return null;
         } finally {
             handle.close();
@@ -73,30 +72,29 @@ public class AuthorService {
 
     public boolean saveAuthor(AuthorDTO authorDTO) {
         Handle handle = jdbi.open();
+        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
             handle.begin();
             boolean createdAut = authorDAO.createAuthor(authorDTO.getFirstName(), authorDTO.getLastName());
             if (createdAut) {
                 handle.commit();
                 return true;
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, author has not been saved!");
             }
         } catch (Exception e) {
             e.printStackTrace();
             handle.rollback();
+            return false;
         } finally {
             handle.close();
         }
-        return false;
     }
 
     public boolean updateAuthor(AuthorDTO authorDTO, Long authorId) {
         Handle handle = jdbi.open();
+        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
             Author searchedAuthor = authorDAO.getAuthorById(authorId);
             handle.begin();
             if (searchedAuthor != null) {
@@ -106,12 +104,10 @@ public class AuthorService {
                     handle.commit();
                     return true;
                 } else {
-                    handle.rollback();
-                    return false;
+                    throw new Exception("Error, author has not been updated!");
                 }
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, author with id = " + authorId + " does NOT exist in database!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,16 +129,14 @@ public class AuthorService {
                     handle.commit();
                     return true;
                 } else {
-                    handle.rollback();
-                    return false;
+                    throw new Exception("Error, author with id = " + authorId + " has NOT been deleted!");
                 }
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, author with id = " + authorId + " does NOT exist in database!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return false;
         } finally {
             handle.close();

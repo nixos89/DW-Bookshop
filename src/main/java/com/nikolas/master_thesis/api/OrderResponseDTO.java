@@ -12,6 +12,5 @@ import lombok.Value;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class OrderResponseDTO {
 
-    // TODO: implement OrderResponseDTO
     Long orderId;
 }

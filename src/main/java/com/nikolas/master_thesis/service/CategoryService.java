@@ -9,7 +9,7 @@ import org.jdbi.v3.core.Jdbi;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: test all methods!!!
+
 public class CategoryService {
 
     //    private final CategoryDAO categoryDAO;
@@ -24,20 +24,19 @@ public class CategoryService {
 
     public CategoryDTO getCategoryById(Long catId) {
         Handle handle = jdbi.open();
+        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             handle.begin();
             Category category = categoryDAO.getCategoryById(catId);
-            handle.commit();
             if (category != null) {
+                handle.commit();
                 return new CategoryDTO(category.getCategoryId(), category.getName(), category.isDeleted());
             } else {
-                handle.rollback();
-                return null;
+                throw new Exception("Error, category with id = " + catId + " does NOT exist in database!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return null;
         } finally {
             handle.close();
@@ -46,29 +45,27 @@ public class CategoryService {
 
     public List<CategoryDTO> getAllCategories() {
         Handle handle = jdbi.open();
+        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             handle.begin();
             List<Category> categories = categoryDAO.getAllCategories();
-            handle.commit();
             if (categories != null && !categories.isEmpty()) {
                 List<CategoryDTO> categoryDTOS = new ArrayList<>();
                 for (Category cat : categories) {
                     categoryDTOS.add(new CategoryDTO(cat.getCategoryId(), cat.getName(), cat.isDeleted()));
                 }
+                handle.commit();
                 return categoryDTOS;
             } else {
-                handle.rollback();
-                return null;
+                throw new Exception("Error, with categories are NULL or there are no categories in database!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return null;
         } finally {
             handle.close();
         }
-
     }
 
     public boolean saveCategory(CategoryDTO catDTO) {
@@ -81,16 +78,15 @@ public class CategoryService {
                 handle.commit();
                 return true;
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, category has NOT been saved!");
             }
         } catch (Exception e) {
             e.printStackTrace();
             handle.rollback();
+            return false;
         } finally {
             handle.close();
         }
-        return false;
     }
 
     public boolean updateCategory(CategoryDTO catDTO, Long catId) {
@@ -104,21 +100,18 @@ public class CategoryService {
                     handle.commit();
                     return true;
                 } else {
-                    handle.rollback();
-                    return false;
+                    throw new Exception("Error, category has NOT been updated!");
                 }
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, category with id = " + catId + " does NOT exist in database!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return false;
         } finally {
             handle.close();
         }
-
     }
 
     public boolean deleteCategory(Long catId) {
@@ -133,12 +126,10 @@ public class CategoryService {
                     handle.commit();
                     return true;
                 } else {
-                    handle.rollback();
-                    return false;
+                    throw new Exception("Error, category with id = " + catId + " has NOT been deleted!");
                 }
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, category with id = " + catId + " does NOT exist in database!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,4 +140,4 @@ public class CategoryService {
         }
     }
 
-    }
+}

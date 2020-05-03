@@ -33,15 +33,14 @@ public class BookService {
 
     public List<BookDTO2> getAllBooks() {
         Handle handle = jdbi.open();
+        BookDAO bookDAO = handle.attach(BookDAO.class);
+        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
+        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            BookDAO bookDAO = handle.attach(BookDAO.class);
             handle.begin();
             List<Book> books = bookDAO.getAllBooks();
             List<BookDTO2> bookDTO2List = new ArrayList<>();
             if (books != null && !books.isEmpty()) {
-                AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
-                CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
-
                 for (Book book : books) {
                     List<Author> authors = authorDAO.getAuthorsByBookId(book.getBookId());
                     List<Category> categories = categoryDAO.getCategoriesByBookId(book.getBookId());
@@ -50,10 +49,10 @@ public class BookService {
                     BookDTO2 bookDTO = bookMSMapper.fromBook(book);
                     bookDTO2List.add(bookDTO);
                 }
-
+                handle.commit();
                 return bookDTO2List;
             } else {
-                return null;
+                throw new Exception("Error, books are empty or null!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,19 +61,17 @@ public class BookService {
         } finally {
             handle.close();
         }
-
     }
 
     public BookDTO2 getBookById(Long bookId) {
         Handle handle = jdbi.open();
+        BookDAO bookDAO = handle.attach(BookDAO.class);
+        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
+        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            BookDAO bookDAO = handle.attach(BookDAO.class);
             handle.begin();
             Book book = bookDAO.getBookById(bookId);
             if (book != null) {
-                AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
-                CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
-
                 List<Author> authors = authorDAO.getAuthorsByBookId(book.getBookId());
                 List<Category> categories = categoryDAO.getCategoriesByBookId(book.getBookId());
                 book.setAuthors(new HashSet<>(authors));
@@ -85,8 +82,8 @@ public class BookService {
                 return null;
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return null;
         } finally {
             handle.close();
@@ -96,8 +93,8 @@ public class BookService {
 
     public boolean createBook(AddUpdateBookDTO bookDTOToSave) {
         Handle handle = jdbi.open();
+        BookDAO bookDAO = handle.attach(BookDAO.class);
         try {
-            BookDAO bookDAO = handle.attach(BookDAO.class);
             handle.begin();
             Book savedBook = bookDAO.createBook(bookDTOToSave.getTitle(), bookDTOToSave.getPrice(),
                     bookDTOToSave.getAmount(), bookDTOToSave.isDeleted());
@@ -112,12 +109,11 @@ public class BookService {
                 handle.commit();
                 return true;
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, book has NOT been saved!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return false;
         } finally {
             handle.close();
@@ -126,10 +122,10 @@ public class BookService {
 
     public boolean updateBook(AddUpdateBookDTO bookDTOToUpdate, Long bookId) {
         Handle handle = jdbi.open();
+        BookDAO bookDAO = handle.attach(BookDAO.class);
+        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
+        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            BookDAO bookDAO = handle.attach(BookDAO.class);
-            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
-            CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             handle.begin();
             Book searchedBook = bookDAO.getBookById(bookId);
             if (searchedBook != null) {
@@ -149,43 +145,39 @@ public class BookService {
                     handle.commit();
                     return true;
                 } else {
-                    handle.rollback();
-                    return false;
+                    throw new Exception("Error, book has NOT been updated!");
                 }
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, book with id = " + bookId + " does NOT exist in database!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return false;
         } finally {
             handle.close();
         }
     }
 
-    public boolean deleteBook(Long id) {
+    public boolean deleteBook(Long bookId) {
         Handle handle = jdbi.open();
+        BookDAO bookDAO = handle.attach(BookDAO.class);
         try {
-            BookDAO bookDAO = handle.attach(BookDAO.class);
             handle.begin();
-            Book book = bookDAO.getBookById(id);
+            Book book = bookDAO.getBookById(bookId);
             if (book != null) {
-                if (bookDAO.deleteBook(id)) {
+                if (bookDAO.deleteBook(bookId)) {
                     handle.commit();
                     return true;
                 } else {
-                    handle.rollback();
-                    return false;
+                    throw new Exception("Error, book has NOT been deleted!");
                 }
             } else {
-                handle.rollback();
-                return false;
+                throw new Exception("Error, book with id = " + bookId + " does NOT exist in database!");
             }
         } catch (Exception e) {
-            handle.rollback();
             e.printStackTrace();
+            handle.rollback();
             return false;
         } finally {
             handle.close();
