@@ -3,6 +3,7 @@ package com.nikolas.master_thesis.resources;
 import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.service.AuthorService;
 import com.nikolas.master_thesis.util.DWBException;
+import org.apache.http.HttpStatus;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -30,7 +31,7 @@ public class AuthorResource {
         if (author != null) {
             return Response.ok(author).build();
         } else {
-            throw new DWBException(404, "No author in database exist for id = " + id);
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "No author in database exist for id = " + id);
         }
     }
 
@@ -40,7 +41,7 @@ public class AuthorResource {
         if(authors != null && !authors.isEmpty()) {
             return Response.ok(authors).build();
         } else {
-            throw new DWBException(404, "No authors in database exist!");
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "No authors in database exist!");
         }
 
     }

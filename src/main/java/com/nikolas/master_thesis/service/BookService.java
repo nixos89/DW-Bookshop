@@ -1,19 +1,17 @@
 package com.nikolas.master_thesis.service;
 
 import com.nikolas.master_thesis.api.AddUpdateBookDTO;
-import com.nikolas.master_thesis.api.BookDTO2;
+import com.nikolas.master_thesis.api.BookDTO;
 import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.core.Category;
 import com.nikolas.master_thesis.db.AuthorDAO;
 import com.nikolas.master_thesis.db.BookDAO;
 import com.nikolas.master_thesis.db.CategoryDAO;
-import com.nikolas.master_thesis.mapper.BookMapper;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
-import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +29,7 @@ public class BookService {
 //        bookDAO.createBookTable();
     }
 
-    public List<BookDTO2> getAllBooks() {
+    public List<BookDTO> getAllBooks() {
         Handle handle = jdbi.open();
         BookDAO bookDAO = handle.attach(BookDAO.class);
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
@@ -39,18 +37,18 @@ public class BookService {
         try {
             handle.begin();
             List<Book> books = bookDAO.getAllBooks();
-            List<BookDTO2> bookDTO2List = new ArrayList<>();
+            List<BookDTO> bookDTOList = new ArrayList<>();
             if (books != null && !books.isEmpty()) {
                 for (Book book : books) {
                     List<Author> authors = authorDAO.getAuthorsByBookId(book.getBookId());
                     List<Category> categories = categoryDAO.getCategoriesByBookId(book.getBookId());
                     book.setAuthors(new HashSet<>(authors));
                     book.setCategories(new HashSet<>(categories));
-                    BookDTO2 bookDTO = bookMSMapper.fromBook(book);
-                    bookDTO2List.add(bookDTO);
+                    BookDTO bookDTO = bookMSMapper.fromBook(book);
+                    bookDTOList.add(bookDTO);
                 }
                 handle.commit();
-                return bookDTO2List;
+                return bookDTOList;
             } else {
                 throw new Exception("Error, books are empty or null!");
             }
@@ -63,7 +61,7 @@ public class BookService {
         }
     }
 
-    public BookDTO2 getBookById(Long bookId) {
+    public BookDTO getBookById(Long bookId) {
         Handle handle = jdbi.open();
         BookDAO bookDAO = handle.attach(BookDAO.class);
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);

@@ -1,9 +1,17 @@
 package com.nikolas.master_thesis.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class OrderDTO {
     private Long orderId;
     private double totalPrice;
@@ -11,39 +19,5 @@ public class OrderDTO {
     private List<OrderItemDTO> orderItems;
     private UserDTO userDTO;
 
-    public OrderDTO() {
-    }
 
-    public OrderDTO(Long orderId, double totalPrice, String orderDate, List<OrderItemDTO> orderItems, UserDTO userDTO) {
-        this.orderId = orderId;
-        this.totalPrice = totalPrice;
-        this.orderDate = orderDate;
-        this.orderItems = orderItems;
-        this.userDTO = userDTO;
-    }
-
-    @JsonProperty("order_id")
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    @JsonProperty("total_price")
-    public double getTotalPrice() {
-        return totalPrice;
-    }
-
-    @JsonProperty("order_date")
-    public String getOrderDate() {
-        return orderDate;
-    }
-
-    @JsonProperty("order_items")
-    public List<OrderItemDTO> getOrderItems() {
-        return orderItems;
-    }
-
-    @JsonProperty("user")
-    public UserDTO getUserDTO() {
-        return userDTO;
-    }
 }

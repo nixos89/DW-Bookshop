@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -123,12 +122,12 @@ public class OrderService {
                         book.setAuthors(authors);
                         book.setCategories(categories);
 
-                        BookDTO2 bookDTO2 = bookMSMapper.fromBook(book);
+                        BookDTO bookDTO = bookMSMapper.fromBook(book);
                         BigDecimal bd = BigDecimal.valueOf( (book.getPrice() * oi.getAmount())).setScale(2, RoundingMode.HALF_UP);
                         double booksPriceNew = bd.doubleValue();
                         orderPrice += booksPriceNew;
 
-                        OrderItemDTO oiDTO = new OrderItemDTO(oi.getOrderItemId(), oi.getAmount(), bookDTO2, oi.getOrder().getOrderId(), booksPriceNew);
+                        OrderItemDTO oiDTO = new OrderItemDTO(oi.getOrderItemId(), oi.getAmount(), bookDTO, oi.getOrder().getOrderId(), booksPriceNew);
                         orderItemDTOList.add(oiDTO);
                     }
                     BigDecimal bd2 = BigDecimal.valueOf(orderPrice).setScale(2, RoundingMode.HALF_UP);

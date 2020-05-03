@@ -1,10 +1,8 @@
 package com.nikolas.master_thesis.db;
 
-import com.nikolas.master_thesis.api.BookDTO;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.core.Order;
 import com.nikolas.master_thesis.core.OrderItem;
-import com.nikolas.master_thesis.reducers.OrderItemBookReducer;
 import com.nikolas.master_thesis.reducers.OrderItemOrderReducer;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;

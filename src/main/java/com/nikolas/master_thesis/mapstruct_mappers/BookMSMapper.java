@@ -1,6 +1,6 @@
 package com.nikolas.master_thesis.mapstruct_mappers;
 
-import com.nikolas.master_thesis.api.BookDTO2;
+import com.nikolas.master_thesis.api.BookDTO;
 import com.nikolas.master_thesis.core.Book;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -11,9 +11,9 @@ public interface BookMSMapper {
 
     BookMSMapper INSTANCE = Mappers.getMapper(BookMSMapper.class);
 
-    Book toBook(BookDTO2 bookDTO);
+    Book toBook(BookDTO bookDTO);
 
     @InheritInverseConfiguration
-    BookDTO2 fromBook(Book book);
+    BookDTO fromBook(Book book);
 
 }

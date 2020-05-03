@@ -10,7 +10,7 @@ public class DWBExceptionMapper implements ExceptionMapper<DWBException> {
     public Response toResponse(DWBException exception) {
         return Response.status(exception.getCode())
                 .entity(exception.getMessage())
-                .type(MediaType.APPLICATION_JSON_TYPE)
+                .type(MediaType.TEXT_PLAIN)
                 .build();
     }
 }
