@@ -35,6 +35,7 @@ public class BookService {
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             List<Book> books = bookDAO.getAllBooks();
             List<BookDTO> bookDTOList = new ArrayList<>();
@@ -67,6 +68,7 @@ public class BookService {
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Book book = bookDAO.getBookById(bookId);
             if (book != null) {
@@ -93,6 +95,7 @@ public class BookService {
         Handle handle = jdbi.open();
         BookDAO bookDAO = handle.attach(BookDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Book savedBook = bookDAO.createBook(bookDTOToSave.getTitle(), bookDTOToSave.getPrice(),
                     bookDTOToSave.getAmount(), bookDTOToSave.isDeleted());
@@ -124,6 +127,7 @@ public class BookService {
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Book searchedBook = bookDAO.getBookById(bookId);
             if (searchedBook != null) {
@@ -161,6 +165,7 @@ public class BookService {
         Handle handle = jdbi.open();
         BookDAO bookDAO = handle.attach(BookDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Book book = bookDAO.getBookById(bookId);
             if (book != null) {

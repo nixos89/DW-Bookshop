@@ -35,11 +35,12 @@ public class OrderService {
     public OrderResponseDTO addOrder(OrderListDTO orderRequest, String username) {
         Handle handle = jdbi.open();
         try {
+            handle.getConnection().setAutoCommit(false);
             Set<OrderItem> orderItems = new HashSet<>();
             Order order = new Order();
             if (orderRequest != null) {
                 handle.begin();
-                handle.getConfig(Handles.class).setForceEndTransactions(false);
+//                handle.getConnection().setAutoCommit(false);
                 UserDAO userDAO = handle.attach(UserDAO.class);
                 User user = userDAO.findUserByUsername(username);
                 BookDAO bookDAO = handle.attach(BookDAO.class);
@@ -77,6 +78,7 @@ public class OrderService {
                 handle.commit();
                 return new OrderResponseDTO(order.getOrderId());
             } else {
+                handle.rollback();
                 throw new Exception("Error, orderRequest is EMPTY!");
             }
         } catch (Exception e) {
@@ -92,9 +94,10 @@ public class OrderService {
     public OrderReportDTO getAllOrders(){
         Handle handle = jdbi.open();
         try {
-            handle.begin();
+            handle.getConnection().setAutoCommit(false);
             List<OrderDTO> orderDTOList = new LinkedList<>();
             List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
+            handle.begin();
             OrderDAO orderDAO = handle.attach(OrderDAO.class);
             List<Order> orders = orderDAO.getAllOrders();
             OrderDTO orderDTO = new OrderDTO();

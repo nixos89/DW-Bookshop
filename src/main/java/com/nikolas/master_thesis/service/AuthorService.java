@@ -25,6 +25,7 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Author author = authorDAO.getAuthorById(authorId);
             if (author != null) {
@@ -47,6 +48,7 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             List<Author> authors = authorDAO.getAllAuthorPojos();
             handle.commit();
@@ -74,6 +76,7 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             boolean createdAut = authorDAO.createAuthor(authorDTO.getFirstName(), authorDTO.getLastName());
             if (createdAut) {
@@ -95,8 +98,9 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            Author searchedAuthor = authorDAO.getAuthorById(authorId);
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            Author searchedAuthor = authorDAO.getAuthorById(authorId);
             if (searchedAuthor != null) {
                 boolean isUpdatedAuthor = authorDAO.updateAuthor(authorId, authorDTO.getFirstName(),
                         authorDTO.getLastName());
@@ -122,6 +126,7 @@ public class AuthorService {
         Handle handle = jdbi.open();
         try {
             AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Author author = authorDAO.getAuthorById(authorId);
             if (author != null) {
@@ -141,8 +146,6 @@ public class AuthorService {
         } finally {
             handle.close();
         }
-
-
     }
 
 }

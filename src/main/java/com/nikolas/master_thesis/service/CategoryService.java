@@ -24,8 +24,10 @@ public class CategoryService {
 
     public CategoryDTO getCategoryById(Long catId) {
         Handle handle = jdbi.open();
+
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Category category = categoryDAO.getCategoryById(catId);
             if (category != null) {
@@ -47,6 +49,7 @@ public class CategoryService {
         Handle handle = jdbi.open();
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             List<Category> categories = categoryDAO.getAllCategories();
             if (categories != null && !categories.isEmpty()) {
@@ -71,6 +74,7 @@ public class CategoryService {
     public boolean saveCategory(CategoryDTO catDTO) {
         Handle handle = jdbi.open();
         try {
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             boolean createdCat = categoryDAO.createCategory(catDTO.getName(), catDTO.isDeleted());
@@ -93,6 +97,7 @@ public class CategoryService {
         Handle handle = jdbi.open();
         try {
             CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Category searchedCat = categoryDAO.getCategoryById(catId);
             if (searchedCat != null) {
@@ -118,6 +123,7 @@ public class CategoryService {
         Handle handle = jdbi.open();
         try {
             CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
+            handle.getConnection().setAutoCommit(false);
             handle.begin();
             Category cat = categoryDAO.getCategoryById(catId);
             if (cat != null) {
