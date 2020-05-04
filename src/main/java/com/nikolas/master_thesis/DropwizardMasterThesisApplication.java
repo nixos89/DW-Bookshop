@@ -64,6 +64,9 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final UserResource userResource = new UserResource(userService);
         final OrderResource orderResource = new OrderResource(orderService);
 
+        final DWMasterThesisResource dwMasterThesisResource = new DWMasterThesisResource(configuration.getTemplate(), configuration.getDefaultName());
+        environment.jersey().register(dwMasterThesisResource);
+
         final TemplateHealthCheck healthCheck = new TemplateHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("template", healthCheck);
         environment.jersey().register(new DWBExceptionMapper());
