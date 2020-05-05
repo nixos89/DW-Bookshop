@@ -31,8 +31,11 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
 
     @Override
     public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) {
-        // TODO: application initialization
-    } // initialize
+        // TODO: make use of  "DropwizardMasterThesisResourceConfig" class for Dependency Injection
+        DropwizardMasterThesisResourceConfig resourceConfig = new DropwizardMasterThesisResourceConfig();
+//        bootstrap.
+
+    }
 
 
     @Override
@@ -44,32 +47,14 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         // more info @: https://github.com/jdbi/jdbi/issues/992
         jdbi.installPlugin(new PostgresPlugin());
 
-        final AuthorMSMapper authorMSMapper = AuthorMSMapper.INSTANCE;
-        final CategoryMSMapper categoryMSMapper = CategoryMSMapper.INSTANCE;
-        final BookMSMapper bookMSMapper = BookMSMapper.INSTANCE;
-
-        final BookService bookService = new BookService(jdbi, bookMSMapper);
-        final CategoryService categoryService = new CategoryService(jdbi);
-        final AuthorService authorService = new AuthorService(jdbi);
-        final OrderService orderService = new OrderService(jdbi, bookMSMapper);
-
-        final BookResource bookResource = new BookResource(bookService);
-        final AuthorResource authorResource = new AuthorResource(authorService); // changed constructor param
-        final CategoryResource categoryResource = new CategoryResource(categoryService);
-        final OrderResource orderResource = new OrderResource(orderService);
-//        final UserAResource userAResource = new UserAResource(jdbi);
-//        final AccountResource accountResource = new AccountResource(jdbi);
-
         final TemplateHealthCheck healthCheck = new TemplateHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("template", healthCheck);
         environment.jersey().register(new DWBExceptionMapper());
         environment.jersey().register(new JsonProcessingExceptionMapper(true));
-        environment.jersey().register(bookResource);
-        environment.jersey().register(categoryResource);
-        environment.jersey().register(authorResource);
-        environment.jersey().register(orderResource);
-//        environment.jersey().register(accountResource);
-//        environment.jersey().register(userAResource);
-    }// run(..)
+        environment.jersey().register(BookResource.class);
+        environment.jersey().register(CategoryResource.class);
+        environment.jersey().register(AuthorResource.class);
+        environment.jersey().register(OrderResource.class);
+    }
 
 }
