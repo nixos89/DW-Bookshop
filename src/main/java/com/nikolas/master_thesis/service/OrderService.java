@@ -35,14 +35,16 @@ public class OrderService {
     public OrderResponseDTO addOrder(OrderListDTO orderRequest, String username) {
         Handle handle = jdbi.open();
         try {
-//            handle.getConnection().setAutoCommit(false);
             Set<OrderItem> orderItems = new HashSet<>();
             Order order = new Order();
+            handle.begin();
+            handle.getConnection().setAutoCommit(false);
             if (orderRequest != null) {
-                handle.begin();
-                handle.getConnection().setAutoCommit(false);
                 UserDAO userDAO = handle.attach(UserDAO.class);
                 User user = userDAO.findUserByUsername(username);
+                if (user == null) {
+                    throw new Exception("Error, user with username: " + username + " doesn't exist in DB!");
+                }
                 BookDAO bookDAO = handle.attach(BookDAO.class);
                 for (AddOrderDTO addOrder : orderRequest.getOrders()) {
                     Book book = bookDAO.getBookById(addOrder.getBookId());
@@ -52,9 +54,6 @@ public class OrderService {
                         throw new Exception("Error, it's ONLY possible (for book '" + book.getTitle() + "', id = "
                                 + book.getBookId() + ") to order up to " + book.getAmount() + " copies!");
                     } else {
-                        if (user == null) {
-                            throw new Exception("Error, user with username: " + username + " doesn't exist in DB!");
-                        }
                         book.setAmount(book.getAmount() - addOrder.getAmount());
                         order.setTotal(orderRequest.getTotalPrice());
                         order.setOrderDate(new Timestamp(System.currentTimeMillis()));
@@ -78,7 +77,6 @@ public class OrderService {
                 handle.commit();
                 return new OrderResponseDTO(order.getOrderId());
             } else {
-                handle.rollback();
                 throw new Exception("Error, orderRequest is EMPTY!");
             }
         } catch (Exception e) {

@@ -1,5 +1,6 @@
 package com.nikolas.master_thesis.resources;
 
+import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
 import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.service.AuthorService;
 import com.nikolas.master_thesis.util.DWBException;
@@ -19,7 +20,6 @@ public class AuthorResource {
 
     private AuthorService authorService;
 
-    @Inject
     public AuthorResource(AuthorService authorService) {
         this.authorService = authorService;
     }
@@ -46,35 +46,43 @@ public class AuthorResource {
 
     }
 
+    // TODO: test ALL method below
+
     @POST
-    public Response saveAuthor(AuthorDTO authorDTO) {
+    public Response saveAuthor(AddUpdateAuthorDTO authorDTO)  throws DWBException {
+        if(authorDTO == null) {
+            throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
+        }
         boolean isSavedAuthor = authorService.saveAuthor(authorDTO);
         if (isSavedAuthor) {
             return Response.status(Status.CREATED).build();
         } else {
-            return Response.status(Status.BAD_REQUEST).build();
+            throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, please fill correctly all fields for saving author!");
         }
     }
 
     @PUT
     @Path("/{id}")
-    public Response updateAuthor(AuthorDTO authorDTO, @PathParam("id") Long authorId) {
+    public Response updateAuthor(AddUpdateAuthorDTO authorDTO, @PathParam("id") Long authorId) throws DWBException  {
+        if(authorDTO == null) {
+            throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
+        }
         boolean isUpdatedAuthor = authorService.updateAuthor(authorDTO, authorId);
         if (isUpdatedAuthor) {
             return Response.noContent().build();
         } else {
-            return Response.status(Status.NOT_MODIFIED).build();
+            throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, please fill correctly all fields for saving author!");
         }
     }
 
     @DELETE
     @Path("/{id}")
-    public Response deleteAuthor(@PathParam("id") Long authorId) {
+    public Response deleteAuthor(@PathParam("id") Long authorId) throws DWBException {
         boolean isDeleted = authorService.deleteAuthor(authorId);
         if (isDeleted) {
             return Response.noContent().build();
         } else {
-            return Response.status(Status.NOT_ACCEPTABLE).build();
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error, author for id = " + authorId + " does NOT exist in database!");
         }
     }
 }

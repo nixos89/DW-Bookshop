@@ -46,7 +46,7 @@ public interface CategoryDAO {
     @GetGeneratedKeys
     @UseRowMapper(CategoryMapper.class)
     @SqlUpdate("INSERT INTO Category(name, is_deleted) VALUES(?, ?)")
-    boolean createCategory(String name, boolean isDeleted);
+    Category createCategory(String name, boolean isDeleted);
 
     @SqlUpdate("UPDATE Category SET name = :name, is_deleted = :is_deleted WHERE category_id = :category_id")
     boolean updateCategory(@Bind("category_id") Long catId, @Bind("name") String firstName, @Bind("is_deleted") Boolean isDeleted);

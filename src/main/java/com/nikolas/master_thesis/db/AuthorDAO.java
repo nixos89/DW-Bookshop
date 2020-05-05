@@ -29,7 +29,7 @@ public interface AuthorDAO {
     @GetGeneratedKeys
     @UseRowMapper(AuthorMapper.class)
     @SqlUpdate("INSERT INTO Author(first_name, last_name) VALUES(?, ?) ")
-    boolean createAuthor(String firstName, String lastName); // switched return type from AuthorDTO to boolean
+    Author createAuthor(String firstName, String lastName); // switched return type from AuthorDTO to boolean
 
     @UseRowMapper(AuthorMapper.class)
     @SqlQuery("SELECT author_id, first_name, last_name FROM Author WHERE Author.author_id = ?")

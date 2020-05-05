@@ -1,5 +1,6 @@
 package com.nikolas.master_thesis.service;
 
+import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
 import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.db.AuthorDAO;
@@ -23,10 +24,10 @@ public class AuthorService {
 
     public AuthorDTO getAuthorById(Long authorId) {
         Handle handle = jdbi.open();
-        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
             handle.begin();
             handle.getConnection().setAutoCommit(false);
+            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
             Author author = authorDAO.getAuthorById(authorId);
             if (author != null) {
                 handle.commit();
@@ -46,10 +47,10 @@ public class AuthorService {
 
     public List<AuthorDTO> getAllAuthors() {
         Handle handle = jdbi.open();
-        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
             handle.begin();
             handle.getConnection().setAutoCommit(false);
+            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
             List<Author> authors = authorDAO.getAllAuthorPojos();
             handle.commit();
             if (authors != null && !authors.isEmpty()) {
@@ -72,14 +73,14 @@ public class AuthorService {
     }
 
 
-    public boolean saveAuthor(AuthorDTO authorDTO) {
+    public boolean saveAuthor(AddUpdateAuthorDTO authorDTO) {
         Handle handle = jdbi.open();
-        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
             handle.begin();
             handle.getConnection().setAutoCommit(false);
-            boolean createdAut = authorDAO.createAuthor(authorDTO.getFirstName(), authorDTO.getLastName());
-            if (createdAut) {
+            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
+            Author createdAut = authorDAO.createAuthor(authorDTO.getFirstName(), authorDTO.getLastName());
+            if (createdAut != null) {
                 handle.commit();
                 return true;
             } else {
@@ -94,12 +95,13 @@ public class AuthorService {
         }
     }
 
-    public boolean updateAuthor(AuthorDTO authorDTO, Long authorId) {
+
+    public boolean updateAuthor(AddUpdateAuthorDTO authorDTO, Long authorId) {
         Handle handle = jdbi.open();
-        AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
             handle.begin();
             handle.getConnection().setAutoCommit(false);
+            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
             Author searchedAuthor = authorDAO.getAuthorById(authorId);
             if (searchedAuthor != null) {
                 boolean isUpdatedAuthor = authorDAO.updateAuthor(authorId, authorDTO.getFirstName(),

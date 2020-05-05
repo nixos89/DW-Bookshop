@@ -1,5 +1,6 @@
 package com.nikolas.master_thesis.service;
 
+import com.nikolas.master_thesis.api.AddUpdateCategoryDTO;
 import com.nikolas.master_thesis.api.CategoryDTO;
 import com.nikolas.master_thesis.core.Category;
 import com.nikolas.master_thesis.db.CategoryDAO;
@@ -24,11 +25,10 @@ public class CategoryService {
 
     public CategoryDTO getCategoryById(Long catId) {
         Handle handle = jdbi.open();
-
-        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
             handle.begin();
             handle.getConnection().setAutoCommit(false);
+            CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             Category category = categoryDAO.getCategoryById(catId);
             if (category != null) {
                 handle.commit();
@@ -45,12 +45,13 @@ public class CategoryService {
         }
     }
 
+
     public List<CategoryDTO> getAllCategories() {
         Handle handle = jdbi.open();
-        CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
             handle.begin();
             handle.getConnection().setAutoCommit(false);
+            CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             List<Category> categories = categoryDAO.getAllCategories();
             if (categories != null && !categories.isEmpty()) {
                 List<CategoryDTO> categoryDTOS = new ArrayList<>();
@@ -71,14 +72,15 @@ public class CategoryService {
         }
     }
 
-    public boolean saveCategory(CategoryDTO catDTO) {
+
+    public boolean saveCategory(AddUpdateCategoryDTO catDTO) {
         Handle handle = jdbi.open();
         try {
             handle.begin();
             handle.getConnection().setAutoCommit(false);
             CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
-            boolean createdCat = categoryDAO.createCategory(catDTO.getName(), catDTO.isDeleted());
-            if (createdCat) {
+            Category createdCat = categoryDAO.createCategory(catDTO.getName(), catDTO.isDeleted());
+            if (createdCat != null) {
                 handle.commit();
                 return true;
             } else {
@@ -93,15 +95,16 @@ public class CategoryService {
         }
     }
 
-    public boolean updateCategory(CategoryDTO catDTO, Long catId) {
+
+    public boolean updateCategory(AddUpdateCategoryDTO catDTO, Long catId) {
         Handle handle = jdbi.open();
         try {
-            CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             handle.begin();
             handle.getConnection().setAutoCommit(false);
+            CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             Category searchedCat = categoryDAO.getCategoryById(catId);
             if (searchedCat != null) {
-                if (categoryDAO.updateCategory(catDTO.getCategoryId(), catDTO.getName(), catDTO.isDeleted())) {
+                if (categoryDAO.updateCategory(catId, catDTO.getName(), catDTO.isDeleted())) {
                     handle.commit();
                     return true;
                 } else {
@@ -118,6 +121,7 @@ public class CategoryService {
             handle.close();
         }
     }
+
 
     public boolean deleteCategory(Long catId) {
         Handle handle = jdbi.open();
@@ -141,7 +145,7 @@ public class CategoryService {
             e.printStackTrace();
             handle.rollback();
             return false;
-        }finally {
+        } finally {
             handle.close();
         }
     }
