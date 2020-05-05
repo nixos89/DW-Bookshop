@@ -27,8 +27,8 @@ public class CategoryService {
 
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Category category = categoryDAO.getCategoryById(catId);
             if (category != null) {
                 handle.commit();
@@ -49,8 +49,8 @@ public class CategoryService {
         Handle handle = jdbi.open();
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             List<Category> categories = categoryDAO.getAllCategories();
             if (categories != null && !categories.isEmpty()) {
                 List<CategoryDTO> categoryDTOS = new ArrayList<>();
@@ -74,8 +74,8 @@ public class CategoryService {
     public boolean saveCategory(CategoryDTO catDTO) {
         Handle handle = jdbi.open();
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
             boolean createdCat = categoryDAO.createCategory(catDTO.getName(), catDTO.isDeleted());
             if (createdCat) {
@@ -97,8 +97,8 @@ public class CategoryService {
         Handle handle = jdbi.open();
         try {
             CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Category searchedCat = categoryDAO.getCategoryById(catId);
             if (searchedCat != null) {
                 if (categoryDAO.updateCategory(catDTO.getCategoryId(), catDTO.getName(), catDTO.isDeleted())) {
@@ -123,8 +123,8 @@ public class CategoryService {
         Handle handle = jdbi.open();
         try {
             CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Category cat = categoryDAO.getCategoryById(catId);
             if (cat != null) {
                 handle.begin();

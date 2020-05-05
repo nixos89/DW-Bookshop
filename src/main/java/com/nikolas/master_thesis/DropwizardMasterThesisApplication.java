@@ -32,20 +32,18 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
     @Override
     public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) {
         // TODO: application initialization
-    } // initialize
+
+    }
 
 
     @Override
     public void run(final DropwizardMasterThesisConfiguration configuration, final Environment environment) {
         final JdbiFactory jdbiFactory = new JdbiFactory();
         final Jdbi jdbi = jdbiFactory.build(environment, configuration.getDataSourceFactory(), "postgresql");
-        // next line of code is implemented by this source: http://jdbi.org/#_postgresql
-        // ...so it can recognize DB vendor to process arrays from JSON
-        // more info @: https://github.com/jdbi/jdbi/issues/992
+        /* Next line of code is implemented by this source: http://jdbi.org/#_postgresql so it can recognize DB vendor to process arrays from JSON
+         * More info @: https://github.com/jdbi/jdbi/issues/992 */
         jdbi.installPlugin(new PostgresPlugin());
 
-        final AuthorMSMapper authorMSMapper = AuthorMSMapper.INSTANCE;
-        final CategoryMSMapper categoryMSMapper = CategoryMSMapper.INSTANCE;
         final BookMSMapper bookMSMapper = BookMSMapper.INSTANCE;
 
         final BookService bookService = new BookService(jdbi, bookMSMapper);
@@ -54,11 +52,9 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final OrderService orderService = new OrderService(jdbi, bookMSMapper);
 
         final BookResource bookResource = new BookResource(bookService);
-        final AuthorResource authorResource = new AuthorResource(authorService); // changed constructor param
+        final AuthorResource authorResource = new AuthorResource(authorService);
         final CategoryResource categoryResource = new CategoryResource(categoryService);
         final OrderResource orderResource = new OrderResource(orderService);
-//        final UserAResource userAResource = new UserAResource(jdbi);
-//        final AccountResource accountResource = new AccountResource(jdbi);
 
         final TemplateHealthCheck healthCheck = new TemplateHealthCheck(configuration.getTemplate());
         environment.healthChecks().register("template", healthCheck);
@@ -68,8 +64,6 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         environment.jersey().register(categoryResource);
         environment.jersey().register(authorResource);
         environment.jersey().register(orderResource);
-//        environment.jersey().register(accountResource);
-//        environment.jersey().register(userAResource);
-    }// run(..)
+    }
 
 }

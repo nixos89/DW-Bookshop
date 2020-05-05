@@ -14,8 +14,8 @@ public class BookMapper implements RowMapper<Book> {
         String title = rs.getString("title");
         double price = rs.getDouble("price");
         int amount = rs.getInt("amount");
-        boolean is_deleted = rs.getBoolean("is_deleted");
+        boolean deleted = rs.getBoolean("is_deleted");
 
-        return new Book(bookId, title, price, amount, is_deleted);
+        return new Book(bookId, title, price, amount, deleted);
     }
 }

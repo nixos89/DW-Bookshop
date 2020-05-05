@@ -35,8 +35,9 @@ public class BookService {
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
+//            handle.getConnection().setAutoCommit(false); // NOTE: causes an Exception with transaction ONLY on 1st request
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             List<Book> books = bookDAO.getAllBooks();
             List<BookDTO> bookDTOList = new ArrayList<>();
             if (books != null && !books.isEmpty()) {
@@ -68,8 +69,8 @@ public class BookService {
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Book book = bookDAO.getBookById(bookId);
             if (book != null) {
                 List<Author> authors = authorDAO.getAuthorsByBookId(book.getBookId());
@@ -79,7 +80,7 @@ public class BookService {
                 handle.commit();
                 return bookMSMapper.fromBook(book);
             } else {
-                return null;
+                throw new Exception("Error, requested book does NOT exist in DB with id = " + bookId);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,8 +96,8 @@ public class BookService {
         Handle handle = jdbi.open();
         BookDAO bookDAO = handle.attach(BookDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Book savedBook = bookDAO.createBook(bookDTOToSave.getTitle(), bookDTOToSave.getPrice(),
                     bookDTOToSave.getAmount(), bookDTOToSave.isDeleted());
 
@@ -127,8 +128,8 @@ public class BookService {
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Book searchedBook = bookDAO.getBookById(bookId);
             if (searchedBook != null) {
                 if(bookDAO.updateBookDTO(bookId, bookDTOToUpdate.getTitle(),
@@ -165,8 +166,8 @@ public class BookService {
         Handle handle = jdbi.open();
         BookDAO bookDAO = handle.attach(BookDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Book book = bookDAO.getBookById(bookId);
             if (book != null) {
                 if (bookDAO.deleteBook(bookId)) {

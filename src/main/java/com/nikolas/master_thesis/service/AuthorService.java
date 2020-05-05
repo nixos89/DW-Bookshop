@@ -25,8 +25,8 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Author author = authorDAO.getAuthorById(authorId);
             if (author != null) {
                 handle.commit();
@@ -48,8 +48,8 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             List<Author> authors = authorDAO.getAllAuthorPojos();
             handle.commit();
             if (authors != null && !authors.isEmpty()) {
@@ -76,8 +76,8 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             boolean createdAut = authorDAO.createAuthor(authorDTO.getFirstName(), authorDTO.getLastName());
             if (createdAut) {
                 handle.commit();
@@ -98,8 +98,8 @@ public class AuthorService {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         try {
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Author searchedAuthor = authorDAO.getAuthorById(authorId);
             if (searchedAuthor != null) {
                 boolean isUpdatedAuthor = authorDAO.updateAuthor(authorId, authorDTO.getFirstName(),
@@ -126,8 +126,8 @@ public class AuthorService {
         Handle handle = jdbi.open();
         try {
             AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
-            handle.getConnection().setAutoCommit(false);
             handle.begin();
+            handle.getConnection().setAutoCommit(false);
             Author author = authorDAO.getAuthorById(authorId);
             if (author != null) {
                 if (authorDAO.deleteAuthor(authorId)) {
