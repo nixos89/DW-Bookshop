@@ -46,7 +46,6 @@ public class AuthorResource {
 
     }
 
-    // TODO: test ALL method below
 
     @POST
     public Response saveAuthor(AddUpdateAuthorDTO authorDTO)  throws DWBException {

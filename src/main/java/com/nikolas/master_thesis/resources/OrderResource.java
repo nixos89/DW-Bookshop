@@ -26,7 +26,6 @@ public class OrderResource {
         this.userService = userService;
     }
 
-    // TODO: implement DWBException in ALL methods BELOW
 
     @POST
     public Response saveOrder(OrderListDTO orderRequest, @QueryParam(value = "username") String username) throws DWBException {

@@ -21,11 +21,6 @@ public interface OrderDAO {
             "order_date TIMESTAMP, user_id BIGINT REFERENCES Users(user_id) )")
     void createOrderTable();
 
-    @RegisterBeanMapper(OrderItem.class)
-    @SqlUpdate("CREATE TABLE IF NOT EXISTS Order_Item ( order_item_id BIGSERIAL PRIMARY KEY, amount INTEGER, book_id BIGINT " +
-            "REFERENCES Book(book_id), order_id BIGINT REFERENCES Orders(order_id) )")
-    void createOrderItemTable();
-
     @RegisterBeanMapper(value= Order.class, prefix = "o")
     @RegisterBeanMapper(value= User.class, prefix = "u")
     @SqlQuery("SELECT o.order_id o_order_id, o.total o_total, o.order_date o_order_date, u.user_id u_user_id, u.first_name u_first_name, " +

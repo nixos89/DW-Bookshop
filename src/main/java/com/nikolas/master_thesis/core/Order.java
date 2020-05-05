@@ -15,10 +15,10 @@ public class Order {
 
     private Long orderId;
     private double total;
-    @Temporal(TemporalType.TIMESTAMP) // TODO: research this type of annotation for JDBi3 and PostgreSQL
+    @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
-    private Set<OrderItem> orderItems; // one-to-many
-    private User user; // many-to-one
+    private Set<OrderItem> orderItems;
+    private User user;
 
     public Order(Long orderId, double total, Date orderDate, User user) {
         this.orderId = orderId;

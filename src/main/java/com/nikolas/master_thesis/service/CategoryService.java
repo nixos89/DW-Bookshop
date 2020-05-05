@@ -13,14 +13,10 @@ import java.util.List;
 
 public class CategoryService {
 
-    //    private final CategoryDAO categoryDAO;
     private final Jdbi jdbi;
 
     public CategoryService(Jdbi jdbi) {
         this.jdbi = jdbi;
-//        this.categoryDAO = jdbi.onDemand(CategoryDAO.class);
-//        categoryDAO.createCategoryTable();
-//        categoryDAO.createTableBookCategory();
     }
 
     public CategoryDTO getCategoryById(Long catId) {

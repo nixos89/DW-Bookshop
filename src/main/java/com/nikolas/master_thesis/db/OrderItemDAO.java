@@ -15,7 +15,11 @@ import java.util.List;
 
 public interface OrderItemDAO {
 
-    // FIXME: might need to create 2 Reducers (OrderItemBookReducer and OrderItemOrderReducer)
+    @RegisterBeanMapper(OrderItem.class)
+    @SqlUpdate("CREATE TABLE IF NOT EXISTS Order_Item ( order_item_id BIGSERIAL PRIMARY KEY, amount INTEGER, book_id BIGINT " +
+            "REFERENCES Book(book_id), order_id BIGINT REFERENCES Orders(order_id) )")
+    void createOrderItemTable();
+
     @GetGeneratedKeys
     @SqlUpdate("INSERT INTO order_item(amount, book_id, order_id) VALUES(:amount, :bookId, :orderId)")
     @RegisterBeanMapper(OrderItem.class)

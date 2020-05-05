@@ -27,7 +27,6 @@ public class CategoryResource {
         this.categoryService = categoryService;
     }
 
-    // TODO: test ALL methods
 
     @GET
     public Response getAllCategories() throws DWBException {

@@ -25,7 +25,6 @@ public class BookResource {
         this.bookService = bookService;
     }
 
-    // TODO: test all methods
 
     @GET
     public Response getAllBooks() throws DWBException {

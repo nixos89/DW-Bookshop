@@ -10,16 +10,12 @@ import org.jdbi.v3.core.Jdbi;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: test all methods
 public class AuthorService {
-    //    private final AuthorDAO authorDAO;
+
     private final Jdbi jdbi;
 
     public AuthorService(Jdbi jdbi) {
         this.jdbi = jdbi;
-//        this.authorDAO = jdbi.onDemand(AuthorDAO.class);
-//        authorDAO.createTableAuthor();
-//        authorDAO.createTableAuthorBook();
     }
 
     public AuthorDTO getAuthorById(Long authorId) {

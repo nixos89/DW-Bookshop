@@ -25,8 +25,6 @@ public class BookService {
     public BookService(Jdbi jdbi, BookMSMapper bookMSMapper) {
         this.jdbi = jdbi;
         this.bookMSMapper = bookMSMapper;
-//        BookDAO bookDAO = jdbi.onDemand(BookDAO.class); // using this to create Book table if needed
-//        bookDAO.createBookTable();
     }
 
     public List<BookDTO> getAllBooks() {

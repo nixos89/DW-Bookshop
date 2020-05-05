@@ -18,17 +18,12 @@ import java.util.*;
 
 public class OrderService {
 
-    //    private final OrderDAO orderDAO;
     private final BookMSMapper bookMSMapper;
     private final Jdbi jdbi;
-    private final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
 
     public OrderService(Jdbi jdbi, BookMSMapper bookMSMapper) {
         this.bookMSMapper = bookMSMapper;
         this.jdbi = jdbi;
-//        this.orderDAO = jdbi.onDemand(OrderDAO.class);
-//        orderDAO.createOrderTable();
-//        orderDAO.createOrderItemTable();
     }
 
 
