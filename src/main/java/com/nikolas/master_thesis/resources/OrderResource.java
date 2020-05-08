@@ -1,36 +1,56 @@
 package com.nikolas.master_thesis.resources;
 
-import com.nikolas.master_thesis.api.OrderDTO;
-import com.nikolas.master_thesis.db.OrderDAO;
-import org.jdbi.v3.core.Jdbi;
+import com.nikolas.master_thesis.api.OrderListDTO;
+import com.nikolas.master_thesis.api.OrderReportDTO;
+import com.nikolas.master_thesis.api.OrderResponseDTO;
+import com.nikolas.master_thesis.service.OrderService;
+import com.nikolas.master_thesis.service.UserService;
+import com.nikolas.master_thesis.util.DWBException;
+import org.apache.http.HttpStatus;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.inject.Inject;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 
 @Path("/orders")
 @Produces(MediaType.APPLICATION_JSON)
 public class OrderResource {
 
-    private final OrderDAO orderDAO;
+    private final OrderService orderService;
+    private final UserService userService;
 
-    public OrderResource(Jdbi jdbi) {
-        this.orderDAO = jdbi.onDemand(OrderDAO.class);
-        orderDAO.createTableOrder();
-        orderDAO.createOrderItemTable();
+    public OrderResource(OrderService orderService, UserService userService) {
+        this.orderService = orderService;
+        this.userService = userService;
     }
 
-    @GET
-    public Response getAllOrders() {
-        List<OrderDTO> orders = orderDAO.getAllOrders();
-        if (orders != null) {
-            return Response.ok(orders).build();
+
+    @POST
+    public Response saveOrder(OrderListDTO orderRequest, @QueryParam(value = "username") String username) throws DWBException {
+        if (userService.getUserByUserName(username) == null) {
+            throw new DWBException(HttpStatus.SC_UNAUTHORIZED, "Error, you (" + username + ") are not authorized to perform this action!");
+        }
+        if (orderRequest == null) {
+            throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Error, request body is empty! Please fill all fields for saving order!");
+        }
+        OrderResponseDTO orderResponseDTO = orderService.addOrder(orderRequest, username);
+        if (orderResponseDTO != null) {
+            return Response.ok(orderResponseDTO).build();
         } else {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, order can not be saved! Check for all fields.");
+        }
+    }
+
+
+    @GET
+    public Response getAllOrders() throws DWBException {
+        OrderReportDTO orderReportDTO = orderService.getAllOrders();
+        if (orderReportDTO != null) {
+            return Response.ok(orderReportDTO).build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
 }

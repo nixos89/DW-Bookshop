@@ -1,64 +1,87 @@
 package com.nikolas.master_thesis.resources;
 
+import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
 import com.nikolas.master_thesis.api.AuthorDTO;
-import com.nikolas.master_thesis.db.AuthorDAO;
-import org.jdbi.v3.core.Jdbi;
+import com.nikolas.master_thesis.service.AuthorService;
+import com.nikolas.master_thesis.util.DWBException;
+import org.apache.http.HttpStatus;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.List;
+
 
 @Path("/authors")
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthorResource {
 
-    private final AuthorDAO authorDAO;
+    private AuthorService authorService;
 
-    public AuthorResource(Jdbi jdbi) {
-        this.authorDAO = jdbi.onDemand(AuthorDAO.class);
-        authorDAO.createTableAuthor();
-        authorDAO.createTableAuthorBook();
+    public AuthorResource(AuthorService authorService) {
+        this.authorService = authorService;
     }
 
     @GET
-    public Response getAllAuthors() {
-        return Response.ok(authorDAO.getAllAuthors()).build();
-    }
-
-    @POST
-    public Response saveAuthor(AuthorDTO authorDTO) {
-        AuthorDTO savedAuthor = authorDAO.createAuthor(authorDTO.getFirstName(), authorDTO.getLastName());
-        if (savedAuthor != null) {
-            return Response.ok(savedAuthor).build();
+    @Path("/{id}")
+    public Response getAuthorById(@PathParam("id") Long id) throws DWBException {
+        AuthorDTO author = authorService.getAuthorById(id);
+        if (author != null) {
+            return Response.ok(author).build();
         } else {
-            return Response.status(Status.NOT_IMPLEMENTED).build();
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "No author in database exist for id = " + id);
         }
     }
 
+    @GET
+    public Response getAllAuthors() throws DWBException {
+        List<AuthorDTO> authors = authorService.getAllAuthors();
+        if(authors != null && !authors.isEmpty()) {
+            return Response.ok(authors).build();
+        } else {
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "No authors in database exist!");
+        }
+
+    }
+
+
+    @POST
+    public Response saveAuthor(AddUpdateAuthorDTO authorDTO)  throws DWBException {
+        if(authorDTO == null) {
+            throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
+        }
+        boolean isSavedAuthor = authorService.saveAuthor(authorDTO);
+        if (isSavedAuthor) {
+            return Response.status(Status.CREATED).build();
+        } else {
+            throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, please fill correctly all fields for saving author!");
+        }
+    }
 
     @PUT
     @Path("/{id}")
-    public Response updateAuthor(@PathParam("id") Long authorId, AuthorDTO authorDTO) {
-        AuthorDTO searchedAuthor = authorDAO.getAuthorById(authorId);
-        if(searchedAuthor!=null){
-            boolean isUpdated = authorDAO.updateAuthor(authorId, authorDTO.getFirstName(), authorDTO.getLastName());
-            return Response.ok(isUpdated).build();
-        }else{
-            return Response.status(Status.NOT_MODIFIED).build();
+    public Response updateAuthor(AddUpdateAuthorDTO authorDTO, @PathParam("id") Long authorId) throws DWBException  {
+        if(authorDTO == null) {
+            throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
+        }
+        boolean isUpdatedAuthor = authorService.updateAuthor(authorDTO, authorId);
+        if (isUpdatedAuthor) {
+            return Response.noContent().build();
+        } else {
+            throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, please fill correctly all fields for saving author!");
         }
     }
 
-
     @DELETE
     @Path("/{id}")
-    public Response updateAuthor(@PathParam("id") Long authorId) {
-        AuthorDTO searchedAuthor = authorDAO.getAuthorById(authorId);
-        if(searchedAuthor!=null){
-            boolean isDeleted = authorDAO.deleteAuthor(authorId);
-            return Response.ok(isDeleted).build();
-        }else{
-            return Response.status(Status.NOT_MODIFIED).build();
+    public Response deleteAuthor(@PathParam("id") Long authorId) throws DWBException {
+        boolean isDeleted = authorService.deleteAuthor(authorId);
+        if (isDeleted) {
+            return Response.noContent().build();
+        } else {
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error, author for id = " + authorId + " does NOT exist in database!");
         }
     }
 }

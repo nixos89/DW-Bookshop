@@ -4,14 +4,16 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
-@Value
-@Builder
+import java.util.Set;
+
+
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class CategoryDTO {
+public class OrderListDTO {
 
-    Long categoryId;
-    String name;
-    boolean deleted;
-
+    private Set<AddOrderDTO> orders;
+    private double totalPrice;
 }
