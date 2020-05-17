@@ -2,11 +2,12 @@ package com.nikolas.master_thesis.resources;
 
 import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
 import com.nikolas.master_thesis.api.AuthorDTO;
+import com.nikolas.master_thesis.api.BookDTO;
 import com.nikolas.master_thesis.service.AuthorService;
+import com.nikolas.master_thesis.service.BookService;
 import com.nikolas.master_thesis.util.DWBException;
 import org.apache.http.HttpStatus;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -19,9 +20,11 @@ import java.util.List;
 public class AuthorResource {
 
     private AuthorService authorService;
+    private BookService bookService;
 
-    public AuthorResource(AuthorService authorService) {
+    public AuthorResource(AuthorService authorService, BookService bookService) {
         this.authorService = authorService;
+        this.bookService = bookService;
     }
 
     @GET
@@ -38,7 +41,7 @@ public class AuthorResource {
     @GET
     public Response getAllAuthors() throws DWBException {
         List<AuthorDTO> authors = authorService.getAllAuthors();
-        if(authors != null && !authors.isEmpty()) {
+        if (authors != null && !authors.isEmpty()) {
             return Response.ok(authors).build();
         } else {
             throw new DWBException(HttpStatus.SC_NOT_FOUND, "No authors in database exist!");
@@ -46,10 +49,21 @@ public class AuthorResource {
 
     }
 
+    @GET
+    @Path("/{id}/books")
+    public Response getAllBooksByAuthorId(@PathParam("id") Long authorId) throws DWBException {
+        List<BookDTO> books = bookService.getAllBooksByAuthorId(authorId);
+        if (books != null) {
+            return Response.ok(books).build();
+        } else {
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error! No books have been found for author with id = " + authorId);
+        }
+    }
+
 
     @POST
-    public Response saveAuthor(AddUpdateAuthorDTO authorDTO)  throws DWBException {
-        if(authorDTO == null) {
+    public Response saveAuthor(AddUpdateAuthorDTO authorDTO) throws DWBException {
+        if (authorDTO == null) {
             throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
         }
         boolean isSavedAuthor = authorService.saveAuthor(authorDTO);
@@ -62,8 +76,8 @@ public class AuthorResource {
 
     @PUT
     @Path("/{id}")
-    public Response updateAuthor(AddUpdateAuthorDTO authorDTO, @PathParam("id") Long authorId) throws DWBException  {
-        if(authorDTO == null) {
+    public Response updateAuthor(AddUpdateAuthorDTO authorDTO, @PathParam("id") Long authorId) throws DWBException {
+        if (authorDTO == null) {
             throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
         }
         boolean isUpdatedAuthor = authorService.updateAuthor(authorDTO, authorId);

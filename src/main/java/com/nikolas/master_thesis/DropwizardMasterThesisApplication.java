@@ -38,12 +38,9 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
     public void run(final DropwizardMasterThesisConfiguration configuration, final Environment environment) {
         final JdbiFactory jdbiFactory = new JdbiFactory();
         final Jdbi jdbi = jdbiFactory.build(environment, configuration.getDataSourceFactory(), "postgresql");
-        /* Next line of code is implemented by this source: http://jdbi.org/#_postgresql so it can recognize DB vendor to process arrays from JSON
-         * More info @: https://github.com/jdbi/jdbi/issues/992 */
         jdbi.installPlugin(new PostgresPlugin());
 
-        // creating tables IFF needed
-        createTables(jdbi);
+        createTables(jdbi); // creating tables IFF needed -> on 1st run
 
         final BookMSMapper bookMSMapper = BookMSMapper.INSTANCE;
 
@@ -54,7 +51,7 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final UserService userService = new UserService(jdbi);
 
         final BookResource bookResource = new BookResource(bookService);
-        final AuthorResource authorResource = new AuthorResource(authorService);
+        final AuthorResource authorResource = new AuthorResource(authorService, bookService);
         final CategoryResource categoryResource = new CategoryResource(categoryService);
         final OrderResource orderResource = new OrderResource(orderService, userService);
 

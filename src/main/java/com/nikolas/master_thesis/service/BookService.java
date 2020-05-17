@@ -60,6 +60,45 @@ public class BookService {
         }
     }
 
+
+    public List<BookDTO> getAllBooksByAuthorId(Long authorId) {
+        Handle handle = jdbi.open();
+        try {
+            handle.begin();
+            handle.getConnection().setAutoCommit(false);
+            AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
+            Author author = authorDAO.getAuthorById(authorId);
+            if (author == null) {
+                throw new Exception("Error, no author for id = " + authorId);
+            }
+            BookDAO bookDAO = handle.attach(BookDAO.class);
+            List<Book> books = bookDAO.getAllBooksByAuthorId(authorId);
+            List<BookDTO> bookDTOList = new ArrayList<>();
+            if (books != null && !books.isEmpty()) {
+                CategoryDAO categoryDAO = handle.attach(CategoryDAO.class);
+                for (Book book : books) {
+                    List<Author> authors = authorDAO.getAuthorsByBookId(book.getBookId());
+                    List<Category> categories = categoryDAO.getCategoriesByBookId(book.getBookId());
+                    book.setAuthors(new HashSet<>(authors));
+                    book.setCategories(new HashSet<>(categories));
+                    BookDTO bookDTO = bookMSMapper.fromBook(book);
+                    bookDTOList.add(bookDTO);
+                }
+                handle.commit();
+                return bookDTOList;
+            } else {
+                throw new Exception("Error, books are empty or null!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            handle.rollback();
+            return null;
+        } finally {
+            handle.close();
+        }
+    }
+
+
     public BookDTO getBookById(Long bookId) {
         Handle handle = jdbi.open();
         try {

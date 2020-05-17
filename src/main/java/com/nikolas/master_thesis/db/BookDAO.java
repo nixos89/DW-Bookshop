@@ -27,6 +27,13 @@ public interface BookDAO extends SqlObject {
     @SqlQuery("SELECT b.book_id, b.title, b.price, b.amount, b.is_deleted FROM book b ORDER BY b.book_id")
     List<Book> getAllBooks();
 
+    @UseRowMapper(BookMapper.class)
+    @SqlQuery("SELECT b.book_id, b.title, b.price, b.amount, b.is_deleted FROM book b " +
+            "LEFT JOIN author_book AS ab ON b.book_id = ab.book_id " +
+            "WHERE ab.author_id = :authorId " +
+            "ORDER BY b.book_id")
+    List<Book> getAllBooksByAuthorId(@Bind("authorId") Long authorId);
+
     @GetGeneratedKeys
     @UseRowMapper(BookMapper.class)
     @SqlUpdate("INSERT INTO Book(title, price, amount, is_deleted) VALUES(:title, :price, :amount, :is_deleted)")
