@@ -52,8 +52,8 @@ public interface BookDAO extends SqlObject {
     void deleteCategoryBook(Long categoryId, Long bookId);
 
     @UseRowMapper(BookMapper.class)
-    @SqlUpdate("UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :is_deleted WHERE book_id = :book_id")
-    boolean updateBookDTO(@Bind("book_id") Long bookId, @Bind("title") String title, @Bind("price") double price, @Bind("amount") int amount, @Bind("is_deleted") boolean is_deleted);
+    @SqlUpdate("UPDATE book SET title = :title, price = :price, amount = :amount, is_deleted = :isDeleted WHERE book_id = :bookId")
+    boolean updateBookDTO(@Bind("bookId") Long bookId, @Bind("title") String title, @Bind("price") double price, @Bind("amount") int amount, @Bind("isDeleted") boolean isDeleted);
 
 
     default void iterateAuthorBook(List<Long> existingAuthorIds, AddUpdateBookDTO bookDTOToSave, Long bookId) {

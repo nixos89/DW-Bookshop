@@ -54,6 +54,9 @@ public class OrderService {
                         order.setOrderDate(new Timestamp(System.currentTimeMillis()));
                         order.setUser(user);
                         order.setOrderItems(orderItems);
+                        if (!bookDAO.updateBookDTO(book.getBookId(), book.getTitle(), book.getPrice(), book.getAmount(), book.isDeleted())) {
+                            throw new Exception("Error, book has NOT been updated!");
+                        }
 
                         OrderItem orderItem = new OrderItem();
                         orderItem.setAmount(addOrder.getAmount());
@@ -84,7 +87,7 @@ public class OrderService {
     }
 
 
-    public OrderReportDTO getAllOrders(){
+    public OrderReportDTO getAllOrders() {
         Handle handle = jdbi.open();
         try {
             List<OrderDTO> orderDTOList = new LinkedList<>();
@@ -119,7 +122,7 @@ public class OrderService {
                         book.setCategories(categories);
 
                         BookDTO bookDTO = bookMSMapper.fromBook(book);
-                        BigDecimal bd = BigDecimal.valueOf( (book.getPrice() * oi.getAmount())).setScale(2, RoundingMode.HALF_UP);
+                        BigDecimal bd = BigDecimal.valueOf((book.getPrice() * oi.getAmount())).setScale(2, RoundingMode.HALF_UP);
                         double booksPriceNew = bd.doubleValue();
                         orderPrice += booksPriceNew;
 
