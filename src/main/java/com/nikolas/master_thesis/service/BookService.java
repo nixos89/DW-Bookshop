@@ -2,6 +2,7 @@ package com.nikolas.master_thesis.service;
 
 import com.nikolas.master_thesis.api.AddUpdateBookDTO;
 import com.nikolas.master_thesis.api.BookDTO;
+import com.nikolas.master_thesis.api.BookListDTO;
 import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.core.Book;
 import com.nikolas.master_thesis.core.Category;
@@ -27,7 +28,7 @@ public class BookService {
         this.bookMSMapper = bookMSMapper;
     }
 
-    public List<BookDTO> getAllBooks() {
+    public BookListDTO getAllBooks() {
         Handle handle = jdbi.open();
         try {
             handle.begin();
@@ -47,7 +48,7 @@ public class BookService {
                     bookDTOList.add(bookDTO);
                 }
                 handle.commit();
-                return bookDTOList;
+                return new BookListDTO(bookDTOList);
             } else {
                 throw new Exception("Error, books are empty or null!");
             }
@@ -61,7 +62,7 @@ public class BookService {
     }
 
 
-    public List<BookDTO> getAllBooksByAuthorId(Long authorId) {
+    public BookListDTO getAllBooksByAuthorId(Long authorId) {
         Handle handle = jdbi.open();
         try {
             handle.begin();
@@ -85,7 +86,7 @@ public class BookService {
                     bookDTOList.add(bookDTO);
                 }
                 handle.commit();
-                return bookDTOList;
+                return new BookListDTO(bookDTOList);
             } else {
                 throw new Exception("Error, books are empty or null!");
             }

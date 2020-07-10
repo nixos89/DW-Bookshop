@@ -2,6 +2,7 @@ package com.nikolas.master_thesis.service;
 
 import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
 import com.nikolas.master_thesis.api.AuthorDTO;
+import com.nikolas.master_thesis.api.AuthorListDTO;
 import com.nikolas.master_thesis.core.Author;
 import com.nikolas.master_thesis.db.AuthorDAO;
 import org.jdbi.v3.core.Handle;
@@ -41,7 +42,7 @@ public class AuthorService {
     }
 
 
-    public List<AuthorDTO> getAllAuthors() {
+    public AuthorListDTO getAllAuthors() {
         Handle handle = jdbi.open();
         try {
             handle.begin();
@@ -55,7 +56,7 @@ public class AuthorService {
                     AuthorDTO authorDTO = new AuthorDTO(a.getAuthorId(), a.getFirstName(), a.getLastName());
                     authorDTOList.add(authorDTO);
                 }
-                return authorDTOList;
+                return new AuthorListDTO(authorDTOList);
             } else {
                 throw new Exception("Error, authors are NULL or they do NOT exist in database!");
             }

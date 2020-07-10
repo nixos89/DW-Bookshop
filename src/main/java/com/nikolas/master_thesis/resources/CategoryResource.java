@@ -1,21 +1,16 @@
 package com.nikolas.master_thesis.resources;
 
 import com.nikolas.master_thesis.api.AddUpdateCategoryDTO;
-import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.api.CategoryDTO;
-import com.nikolas.master_thesis.core.Category;
-import com.nikolas.master_thesis.db.CategoryDAO;
+import com.nikolas.master_thesis.api.CategoryListDTO;
 import com.nikolas.master_thesis.service.CategoryService;
 import com.nikolas.master_thesis.util.DWBException;
 import org.apache.http.HttpStatus;
-import org.jdbi.v3.core.Jdbi;
 
-import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.List;
 
 @Path("/categories")
 @Produces(MediaType.APPLICATION_JSON)
@@ -30,8 +25,8 @@ public class CategoryResource {
 
     @GET
     public Response getAllCategories() throws DWBException {
-        List<CategoryDTO> categories = categoryService.getAllCategories();
-        if (categories != null && !categories.isEmpty()) {
+        CategoryListDTO categories = categoryService.getAllCategories();
+        if (categories != null && !categories.getCategories().isEmpty()) {
             return Response.ok(categories).build();
         } else {
             throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error, NO categories in database!");

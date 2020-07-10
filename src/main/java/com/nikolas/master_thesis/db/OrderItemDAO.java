@@ -35,7 +35,8 @@ public interface OrderItemDAO {
             "FROM order_item AS oi " +
             "LEFT JOIN orders AS o ON oi.order_id = o.order_id " +
             "LEFT JOIN book AS b ON oi.book_id = b.book_id " +
-            "WHERE oi.order_id = :orderId")
+            "WHERE oi.order_id = :orderId " +
+            "ORDER BY oi.order_id")
     List<OrderItem> getAllOrderItemsByOrderId(@Bind("orderId") Long orderId);
 
 }

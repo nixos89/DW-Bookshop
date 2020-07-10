@@ -2,6 +2,7 @@ package com.nikolas.master_thesis.service;
 
 import com.nikolas.master_thesis.api.AddUpdateCategoryDTO;
 import com.nikolas.master_thesis.api.CategoryDTO;
+import com.nikolas.master_thesis.api.CategoryListDTO;
 import com.nikolas.master_thesis.core.Category;
 import com.nikolas.master_thesis.db.CategoryDAO;
 import org.jdbi.v3.core.Handle;
@@ -42,7 +43,7 @@ public class CategoryService {
     }
 
 
-    public List<CategoryDTO> getAllCategories() {
+    public CategoryListDTO getAllCategories() {
         Handle handle = jdbi.open();
         try {
             handle.begin();
@@ -55,7 +56,7 @@ public class CategoryService {
                     categoryDTOS.add(new CategoryDTO(cat.getCategoryId(), cat.getName(), cat.isDeleted()));
                 }
                 handle.commit();
-                return categoryDTOS;
+                return new CategoryListDTO(categoryDTOS);
             } else {
                 throw new Exception("Error, with categories are NULL or there are no categories in database!");
             }

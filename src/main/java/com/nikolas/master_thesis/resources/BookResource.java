@@ -2,6 +2,7 @@ package com.nikolas.master_thesis.resources;
 
 import com.nikolas.master_thesis.api.AddUpdateBookDTO;
 import com.nikolas.master_thesis.api.BookDTO;
+import com.nikolas.master_thesis.api.BookListDTO;
 import com.nikolas.master_thesis.service.BookService;
 import com.nikolas.master_thesis.util.DWBException;
 import org.apache.http.HttpStatus;
@@ -28,7 +29,7 @@ public class BookResource {
 
     @GET
     public Response getAllBooks() throws DWBException {
-        List<BookDTO> books = bookService.getAllBooks();
+        BookListDTO books = bookService.getAllBooks();
         if (books != null) {
             return Response.ok(books).build();
         } else {

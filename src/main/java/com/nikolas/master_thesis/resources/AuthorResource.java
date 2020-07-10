@@ -1,8 +1,6 @@
 package com.nikolas.master_thesis.resources;
 
-import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
-import com.nikolas.master_thesis.api.AuthorDTO;
-import com.nikolas.master_thesis.api.BookDTO;
+import com.nikolas.master_thesis.api.*;
 import com.nikolas.master_thesis.service.AuthorService;
 import com.nikolas.master_thesis.service.BookService;
 import com.nikolas.master_thesis.util.DWBException;
@@ -40,8 +38,8 @@ public class AuthorResource {
 
     @GET
     public Response getAllAuthors() throws DWBException {
-        List<AuthorDTO> authors = authorService.getAllAuthors();
-        if (authors != null && !authors.isEmpty()) {
+        AuthorListDTO authors = authorService.getAllAuthors();
+        if (authors != null && !authors.getAuthors().isEmpty()) {
             return Response.ok(authors).build();
         } else {
             throw new DWBException(HttpStatus.SC_NOT_FOUND, "No authors in database exist!");
@@ -52,7 +50,7 @@ public class AuthorResource {
     @GET
     @Path("/{id}/books")
     public Response getAllBooksByAuthorId(@PathParam("id") Long authorId) throws DWBException {
-        List<BookDTO> books = bookService.getAllBooksByAuthorId(authorId);
+        BookListDTO books = bookService.getAllBooksByAuthorId(authorId);
         if (books != null) {
             return Response.ok(books).build();
         } else {
