@@ -36,7 +36,7 @@ public interface AuthorDAO {
     Author getAuthorById(Long authorId);
 
     @UseRowMapper(AuthorMapper.class)
-    @SqlQuery("SELECT author_id, first_name, last_name FROM Author")
+    @SqlQuery("SELECT author_id, first_name, last_name FROM Author ORDER BY author_id")
     List<Author> getAllAuthorPojos();
 
     @UseRowMapper(AuthorMapper.class)

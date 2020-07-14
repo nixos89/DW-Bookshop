@@ -10,7 +10,7 @@ import lombok.Value;
 @Builder
 @Value
 @AllArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class UserDTO {
 
     Long userId;

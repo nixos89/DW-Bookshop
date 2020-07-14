@@ -1,17 +1,18 @@
 package com.nikolas.master_thesis.api;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
 @Value
 @Builder
 @AllArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class CategoryDTO {
 
     Long categoryId;
     String name;
+    @JsonProperty("isDeleted")
     boolean deleted;
 
 }

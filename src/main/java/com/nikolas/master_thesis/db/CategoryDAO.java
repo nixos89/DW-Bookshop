@@ -33,7 +33,7 @@ public interface CategoryDAO {
 
 
     @UseRowMapper(CategoryMapper.class)
-    @SqlQuery("SELECT category_id, name, is_deleted FROM category")
+    @SqlQuery("SELECT category_id, name, is_deleted FROM category ORDER BY category_id")
     List<Category> getAllCategories();
 
 

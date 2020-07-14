@@ -1,6 +1,9 @@
 package com.nikolas.master_thesis.resources;
 
-import com.nikolas.master_thesis.api.*;
+import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
+import com.nikolas.master_thesis.api.AuthorDTO;
+import com.nikolas.master_thesis.api.AuthorListDTO;
+import com.nikolas.master_thesis.api.BookListDTO;
 import com.nikolas.master_thesis.service.AuthorService;
 import com.nikolas.master_thesis.service.BookService;
 import com.nikolas.master_thesis.util.DWBException;
@@ -10,7 +13,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.util.List;
 
 
 @Path("/authors")
@@ -57,7 +59,6 @@ public class AuthorResource {
             throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error! No books have been found for author with id = " + authorId);
         }
     }
-
 
     @POST
     public Response saveAuthor(AddUpdateAuthorDTO authorDTO) throws DWBException {

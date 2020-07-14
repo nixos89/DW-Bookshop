@@ -52,7 +52,7 @@ public class CategoryResource {
         }
         boolean savedCategory = categoryService.saveCategory(categoryDTO);
         if (savedCategory) {
-            return Response.noContent().build();
+            return Response.status(Status.CREATED).build();
         } else {
             throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, request body is NOT correctly field or something is missing!");
         }
