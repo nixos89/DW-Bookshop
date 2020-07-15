@@ -4,6 +4,7 @@ import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
 import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.api.AuthorListDTO;
 import com.nikolas.master_thesis.core.Author;
+import com.nikolas.master_thesis.core.AuthorBook;
 import com.nikolas.master_thesis.db.AuthorDAO;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
@@ -129,6 +130,10 @@ public class AuthorService {
             handle.getConnection().setAutoCommit(false);
             Author author = authorDAO.getAuthorById(authorId);
             if (author != null) {
+                AuthorBook authorWithBooks = authorDAO.getAuthorByIdFromAuthorBook(authorId);
+                if(authorWithBooks!=null){
+                    throw new Exception("Error, author with id = " + authorId + " has books assigned to him!");
+                }
                 if (authorDAO.deleteAuthor(authorId)) {
                     handle.commit();
                     return true;

@@ -94,7 +94,7 @@ public class AuthorResource {
         if (isDeleted) {
             return Response.noContent().build();
         } else {
-            throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error, author for id = " + authorId + " does NOT exist in database!");
+            throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error, author for id = " + authorId + " does NOT exist in database or has books assigned to him!");
         }
     }
 }

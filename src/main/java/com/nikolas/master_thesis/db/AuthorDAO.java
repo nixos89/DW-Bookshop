@@ -1,7 +1,9 @@
 package com.nikolas.master_thesis.db;
 
 import com.nikolas.master_thesis.core.Author;
+import com.nikolas.master_thesis.core.AuthorBook;
 import com.nikolas.master_thesis.core.Book;
+import com.nikolas.master_thesis.mapper.AuthorBookMapper;
 import com.nikolas.master_thesis.mapper.AuthorMapper;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -52,5 +54,10 @@ public interface AuthorDAO {
 
     @SqlUpdate("DELETE FROM author WHERE author_id = :author_id")
     boolean deleteAuthor(@Bind("author_id") Long authorId);
+
+
+    @UseRowMapper(AuthorBookMapper.class)
+    @SqlQuery("SELECT author_id, book_id FROM author_book WHERE author_id = ?")
+    AuthorBook getAuthorByIdFromAuthorBook(Long authorId);
 
 }
