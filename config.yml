@@ -6,13 +6,12 @@ defaultName: ${DW_DEFAULT_NAME:-Stranger}
 # use the simple server factory if you only want to run on a single port
 server:
   type: simple
+  rootPath: /*
   applicationContextPath: /api
+  adminContextPath: /admin
   connector:
     type: http
     port: 8080
-#    type: admin
-#    port: 8081
-
 
 logging:
   level: INFO

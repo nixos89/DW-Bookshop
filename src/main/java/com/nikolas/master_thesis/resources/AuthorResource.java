@@ -1,5 +1,6 @@
 package com.nikolas.master_thesis.resources;
 
+import com.codahale.metrics.annotation.Timed;
 import com.nikolas.master_thesis.api.AddUpdateAuthorDTO;
 import com.nikolas.master_thesis.api.AuthorDTO;
 import com.nikolas.master_thesis.api.AuthorListDTO;
@@ -29,6 +30,7 @@ public class AuthorResource {
 
     @GET
     @Path("/{id}")
+    @Timed
     public Response getAuthorById(@PathParam("id") Long id) throws DWBException {
         AuthorDTO author = authorService.getAuthorById(id);
         if (author != null) {
@@ -39,6 +41,7 @@ public class AuthorResource {
     }
 
     @GET
+    @Timed
     public Response getAllAuthors() throws DWBException {
         AuthorListDTO authors = authorService.getAllAuthors();
         if (authors != null && !authors.getAuthors().isEmpty()) {
@@ -51,6 +54,7 @@ public class AuthorResource {
 
     @GET
     @Path("/{id}/books")
+    @Timed
     public Response getAllBooksByAuthorId(@PathParam("id") Long authorId) throws DWBException {
         BookListDTO books = bookService.getAllBooksByAuthorId(authorId);
         if (books != null) {
@@ -61,6 +65,7 @@ public class AuthorResource {
     }
 
     @POST
+    @Timed
     public Response saveAuthor(AddUpdateAuthorDTO authorDTO) throws DWBException {
         if (authorDTO == null) {
             throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
@@ -75,6 +80,7 @@ public class AuthorResource {
 
     @PUT
     @Path("/{id}")
+    @Timed
     public Response updateAuthor(AddUpdateAuthorDTO authorDTO, @PathParam("id") Long authorId) throws DWBException {
         if (authorDTO == null) {
             throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Request Body for creating author is empty");
@@ -89,6 +95,7 @@ public class AuthorResource {
 
     @DELETE
     @Path("/{id}")
+    @Timed
     public Response deleteAuthor(@PathParam("id") Long authorId) throws DWBException {
         boolean isDeleted = authorService.deleteAuthor(authorId);
         if (isDeleted) {

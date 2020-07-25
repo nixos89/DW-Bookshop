@@ -16,6 +16,12 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
     @NotEmpty
     private String defaultName = "Stranger";
 
+    @JsonProperty("applicationContextPath")
+    public String applicationContextPath;
+
+    @JsonProperty("adminContextPath")
+    public String adminContextPath;
+
     @Valid
     @NotNull
     private DataSourceFactory dataSourceFactory = new DataSourceFactory();
@@ -49,4 +55,6 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
     }
+
+
 }
