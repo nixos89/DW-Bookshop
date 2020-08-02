@@ -1,10 +1,12 @@
 package com.nikolas.master_thesis;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jmx.JmxReporter;
 import com.nikolas.master_thesis.db.*;
 import com.nikolas.master_thesis.health.TemplateHealthCheck;
-import com.nikolas.master_thesis.mapstruct_mappers.AuthorMSMapper;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
-import com.nikolas.master_thesis.mapstruct_mappers.CategoryMSMapper;
 import com.nikolas.master_thesis.resources.*;
 import com.nikolas.master_thesis.service.*;
 import com.nikolas.master_thesis.util.DWBExceptionMapper;
@@ -17,9 +19,13 @@ import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.postgres.PostgresPlugin;
 
-import java.nio.file.attribute.UserPrincipalLookupService;
+import java.util.concurrent.TimeUnit;
 
 public class DropwizardMasterThesisApplication extends Application<DropwizardMasterThesisConfiguration> {
+
+    private final static MetricRegistry metricRegistry = new MetricRegistry();
+    private static Meter requests = metricRegistry.meter("requests");
+
 
     public static void main(final String[] args) throws Exception {
         new DropwizardMasterThesisApplication().run(args);
@@ -32,7 +38,8 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
 
 
     @Override
-    public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) { }
+    public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) {
+    }
 
     @Override
     public void run(final DropwizardMasterThesisConfiguration configuration, final Environment environment) {
@@ -63,10 +70,26 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         environment.jersey().register(categoryResource);
         environment.jersey().register(authorResource);
         environment.jersey().register(orderResource);
+
+        setUpMetrics();
+    }
+
+    void setUpMetrics() {
+        requests.mark();
+        final JmxReporter jmxReporter = JmxReporter.forRegistry(metricRegistry).build();
+        jmxReporter.start();
+
+        // setting up reports to console...
+        ConsoleReporter consoleReporter = ConsoleReporter.forRegistry(metricRegistry)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        // ... report every 5s AFTER waiting for 5s!
+        consoleReporter.start(5, TimeUnit.SECONDS);
     }
 
 
-    void createTables(Jdbi jdbi){
+    void createTables(Jdbi jdbi) {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         BookDAO bookDAO = handle.attach(BookDAO.class);

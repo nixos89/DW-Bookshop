@@ -1,5 +1,6 @@
 package com.nikolas.master_thesis.resources;
 
+import com.codahale.metrics.annotation.Timed;
 import com.nikolas.master_thesis.api.AddUpdateBookDTO;
 import com.nikolas.master_thesis.api.BookDTO;
 import com.nikolas.master_thesis.api.BookListDTO;
@@ -27,6 +28,7 @@ public class BookResource {
 
 
     @GET
+    @Timed
     public Response getAllBooks() throws DWBException {
         BookListDTO books = bookService.getAllBooks();
         if (books != null) {
@@ -39,6 +41,7 @@ public class BookResource {
 
     @GET
     @Path("/{id}")
+    @Timed
     public Response getBookById(@PathParam("id") Long id) throws DWBException {
         BookDTO book = bookService.getBookById(id);
         if (book != null) {
@@ -50,6 +53,7 @@ public class BookResource {
 
 
     @POST
+    @Timed
     public Response saveBook(AddUpdateBookDTO bookDTO) throws DWBException {
         if (bookDTO == null) {
             throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Error, request body is empty! Please fill all fields for saving book!");
@@ -64,6 +68,7 @@ public class BookResource {
 
     @PUT
     @Path("/{id}")
+    @Timed
     public Response updateBook(@PathParam("id") Long bookId, AddUpdateBookDTO bookDTO) throws DWBException {
         BookDTO searchedBook = bookService.getBookById(bookId);
         if (searchedBook != null) {

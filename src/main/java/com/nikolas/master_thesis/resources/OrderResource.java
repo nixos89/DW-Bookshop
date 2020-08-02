@@ -1,5 +1,6 @@
 package com.nikolas.master_thesis.resources;
 
+import com.codahale.metrics.annotation.Timed;
 import com.nikolas.master_thesis.api.OrderListDTO;
 import com.nikolas.master_thesis.api.OrderReportDTO;
 import com.nikolas.master_thesis.api.OrderResponseDTO;
@@ -28,6 +29,7 @@ public class OrderResource {
 
 
     @POST
+    @Timed
     public Response saveOrder(OrderListDTO orderRequest, @QueryParam(value = "username") String username) throws DWBException {
         if (userService.getUserByUserName(username) == null) {
             throw new DWBException(HttpStatus.SC_UNAUTHORIZED, "Error, you (" + username + ") are not authorized to perform this action!");
@@ -45,6 +47,7 @@ public class OrderResource {
 
 
     @GET
+    @Timed
     public Response getAllOrders() throws DWBException {
         OrderReportDTO orderReportDTO = orderService.getAllOrders();
         if (orderReportDTO != null) {
