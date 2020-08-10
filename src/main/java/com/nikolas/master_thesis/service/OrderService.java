@@ -27,13 +27,13 @@ public class OrderService {
     }
 
 
-    public OrderResponseDTO addOrder(OrderListDTO orderRequest, String username) {
+    public synchronized OrderResponseDTO addOrder(OrderListDTO orderRequest, String username) {
         Handle handle = jdbi.open();
         try {
-            Set<OrderItem> orderItems = new HashSet<>();
-            Order order = new Order();
             handle.begin();
             handle.getConnection().setAutoCommit(false);
+            Set<OrderItem> orderItems = new HashSet<>();
+            Order order = new Order();
             if (orderRequest != null) {
                 UserDAO userDAO = handle.attach(UserDAO.class);
                 User user = userDAO.findUserByUsername(username);

@@ -2,6 +2,7 @@ package com.nikolas.master_thesis;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
+import io.dropwizard.client.HttpClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -21,6 +22,11 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
 
     @JsonProperty("adminContextPath")
     public String adminContextPath;
+
+    @Valid
+    @NotNull
+    @JsonProperty
+    private HttpClientConfiguration httpClient = new HttpClientConfiguration();
 
     @Valid
     @NotNull
@@ -56,5 +62,13 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
         this.dataSourceFactory = dataSourceFactory;
     }
 
+    @JsonProperty("httpClient")
+    public HttpClientConfiguration getHttpClientConfiguration() {
+        return httpClient;
+    }
 
+    @JsonProperty("httpClient")
+    public void setHttpClient(HttpClientConfiguration httpClient) {
+        this.httpClient = httpClient;
+    }
 }

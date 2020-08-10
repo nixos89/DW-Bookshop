@@ -37,9 +37,10 @@ public class OrderResource {
         if (orderRequest == null) {
             throw new DWBException(HttpStatus.SC_NOT_ACCEPTABLE, "Error, request body is empty! Please fill all fields for saving order!");
         }
-        OrderResponseDTO orderResponseDTO = orderService.addOrder(orderRequest, username);
+        //added final modifier
+        final OrderResponseDTO orderResponseDTO = orderService.addOrder(orderRequest, username);
         if (orderResponseDTO != null) {
-            return Response.ok(orderResponseDTO).build();
+            return Response.status(Response.Status.CREATED).entity(orderResponseDTO).build();
         } else {
             throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, order can not be saved! Check for all fields.");
         }

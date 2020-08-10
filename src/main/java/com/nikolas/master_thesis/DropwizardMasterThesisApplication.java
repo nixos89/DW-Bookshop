@@ -1,25 +1,29 @@
 package com.nikolas.master_thesis;
 
-import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.httpclient.HttpClientMetricNameStrategies;
+import com.codahale.metrics.httpclient.InstrumentedHttpClients;
 import com.codahale.metrics.jmx.JmxReporter;
 import com.nikolas.master_thesis.db.*;
 import com.nikolas.master_thesis.health.TemplateHealthCheck;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
-import com.nikolas.master_thesis.resources.*;
+import com.nikolas.master_thesis.resources.AuthorResource;
+import com.nikolas.master_thesis.resources.BookResource;
+import com.nikolas.master_thesis.resources.CategoryResource;
+import com.nikolas.master_thesis.resources.OrderResource;
 import com.nikolas.master_thesis.service.*;
 import com.nikolas.master_thesis.util.DWBExceptionMapper;
 import io.dropwizard.Application;
+import io.dropwizard.client.HttpClientBuilder;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import org.apache.http.client.HttpClient;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.postgres.PostgresPlugin;
-
-import java.util.concurrent.TimeUnit;
 
 public class DropwizardMasterThesisApplication extends Application<DropwizardMasterThesisConfiguration> {
 
@@ -49,6 +53,13 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
 
         createTables(jdbi); // creating tables IFF needed -> on 1st run
 
+        final HttpClient httpClient = new HttpClientBuilder(environment)
+                .using(configuration.getHttpClientConfiguration())
+                .build(getName());
+//        final ExternalResour
+        final HttpClient httpClient2 = InstrumentedHttpClients.createDefault(metricRegistry, HttpClientMetricNameStrategies.HOST_AND_METHOD);
+
+
         final BookMSMapper bookMSMapper = BookMSMapper.INSTANCE;
 
         final BookService bookService = new BookService(jdbi, bookMSMapper);
@@ -70,6 +81,7 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         environment.jersey().register(categoryResource);
         environment.jersey().register(authorResource);
         environment.jersey().register(orderResource);
+        environment.jersey().register(httpClient2);
 
         setUpMetrics();
     }
@@ -79,6 +91,7 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final JmxReporter jmxReporter = JmxReporter.forRegistry(metricRegistry).build();
         jmxReporter.start();
 
+        /*
         // setting up reports to console...
         ConsoleReporter consoleReporter = ConsoleReporter.forRegistry(metricRegistry)
                 .convertRatesTo(TimeUnit.SECONDS)
@@ -86,6 +99,8 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
                 .build();
         // ... report every 5s AFTER waiting for 5s!
         consoleReporter.start(5, TimeUnit.SECONDS);
+        
+         */
     }
 
 
