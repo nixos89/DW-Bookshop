@@ -12,12 +12,9 @@ server:
   connector:
     type: http
     port: 8080
-
-  # ------------------------------------------------------------------------------------------------------------------
-  # ----------------------- Adding additional parameters in order to support up to 10_000 connections ----------------
-  # ------------------------------------------------------------------------------------------------------------------
+  
   # The maximum number of requests to queue before blocking the acceptors.
-  maxQueuedRequests: 5000 # 1024 is default
+  maxQueuedRequests: 1024 # 1024 is default
 
 
 logging:
@@ -26,43 +23,32 @@ logging:
     com.nikolas.master_thesis: DEBUG
 
   appenders:
-    - type: file
-      currentLogFilename: /home/nikola/Documents/DWApp-LOGs/DW-Bookshop_LOG.log
-      threshold: ALL
-      queueSize: 512
-      archive: true
-      archivedLogFilenamePattern: /home/nikola/Documents/DWApp-LOGs/DW-Bookshop_LOG-%d.log
-      archivedFileCount: 5
-      timeZone: UTC
-      logFormat: "%-5p [%d{ISO8601,UTC}] %c: %m%n%rEx"
+    # - type: file
+    #   currentLogFilename: /home/nikola/Documents/DWApp-LOGs/DW-Bookshop_LOG.log
+    #   threshold: ALL
+    #   queueSize: 15024
+    #   archive: true
+    #   archivedLogFilenamePattern: /home/nikola/Documents/DWApp-LOGs/DW-Bookshop_LOG-%d.log
+    #   archivedFileCount: 5
+    #   discardingThreshold: 0
+    #   timeZone: UTC+2
+    #   logFormat: "%-5p [%d{ISO8601,UTC+2}] %c: %m%n%rEx"
+      # logFormat:  "%h %l %u [%t] '%r' %s %b referer '%i{Referer}' '%i{User-Agent}' \n"
       # logFormat: "%h %l %u %t \"%r\" %>s %b"      
       # logFormat: "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined      
-#      logFormat: “%h %l %u %t “%r“ %s %b “%{Referer}i“ “%{User-Agent}i““ combined
-#      logFormat: '%h %l %u %t '%r' %\\>s %b '%{Referer}i' '%{User-Agent}i''
-#      logFormat: "%d{HH:mm:ss.SSS} [%thread] %-5level %com.nikolas.master_thesis.examples.`config-kt`.logger{36} - %msg%n"
-#      logFormat: “%h %l %u %t “%r“ %s %b “%{Referer}i“ “%{User-Agent}i““
-#      logFormat: "%h %l %u %t \"%r\" %s %O \"%{Referer}i\""
-#      logFormat: “%h %l %u %t “%r“ %\\>s %b “%{Referer}i“ “%{User-Agent}i““
-#      logFormat: "%h %l %u %t \"%r\" \"%>s\" %O \"%{Referer}i\""
-#      logFormat: "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
-#      logFormat: combined
-#      logFormat: "%h %l %u %t \"%r\" %>s %b" /etc/httpd
-#      logFormat: “%h %l %u %t “%r” %s %b “%{User-Agent}i””
-#      logFormat: "%h %l %u %t \"%r\" %>s %b" /etc/httpd
-#      logFormat: "%h %l %u %t \"%r\" %>s %b"
-#        logFormat: "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""
-      bufferSize: 8KB
-      immediateFlush: true
+
+      # bufferSize: 8KB
+      # immediateFlush: true
       # filterFactories:
       #   - type: URI
     
     - type: console
       threshold: ALL
-      queueSize: 512
+      queueSize: 15024
       discardingThreshold: 0
-      timeZone: UTC
+      timeZone: UTC+2
       target: stdout
-      logFormat: "%-5p [%d{ISO8601,UTC}] %c: %m%n%rEx"
+      logFormat: "%-5p [%d{ISO8601,UTC+2}] %c: %m%n%rEx"
 
 
 database:
@@ -77,14 +63,15 @@ database:
     hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
   # the maximum amount of time to wait on an empty pool before throwing an exception
-  maxWaitForConnection: 1s
+  maxWaitForConnection: 5s
 
   # the SQL query to run when validating a connection's liveness
   validationQuery: "/* MyService Health Check */ SELECT 1"
 
   validationQueryTimeout: 3s # the timeout before a connection validation queries fail
-  minSize: 8 # the minimum number of connections to keep open
-  maxSize: 32   # the maximum number of connections to keep open
+  initialSize: 2 
+  minSize: 2 # the minimum number of connections to keep open
+  maxSize: 10   # the maximum number of connections to keep open
   checkConnectionWhileIdle: false # whether or not idle connections should be validated
 
   # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
@@ -92,3 +79,4 @@ database:
 
   # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
   minIdleTime: 1 minute
+  

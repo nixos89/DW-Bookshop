@@ -83,19 +83,4 @@ public class BookResource {
         }
     }
 
-
-    @DELETE
-    @Path("/{id}")
-    public Response deleteBook(@PathParam("id") Long bookId) throws DWBException {
-        BookDTO book = bookService.getBookById(bookId);
-        if (book != null) {
-            if (bookService.deleteBook(bookId)) {
-                return Response.noContent().build();
-            } else {
-                throw new DWBException(HttpStatus.SC_BAD_REQUEST, "Error, book for id " + bookId + " can NOT be deleted!");
-            }
-        } else {
-            throw new DWBException(HttpStatus.SC_NOT_FOUND, "Error, book for id " + bookId + " has not been found!");
-        }
-    }
 }

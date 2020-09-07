@@ -181,7 +181,7 @@ public class BookService {
 
                     bookDAO.iterateAuthorBook(existingAuthorIds, bookDTOToUpdate, bookId);
                     bookDAO.iterateCategoryBook(existingCategoryIds, bookDTOToUpdate, bookId);
-                    System.out.println(" ======= Book has been updated! ======== ");
+                    // System.out.println(" ======= Book has been updated! ======== ");
                     handle.commit();
                     return true;
                 } else {
@@ -199,30 +199,5 @@ public class BookService {
         }
     }
 
-    public boolean deleteBook(Long bookId) {
-        Handle handle = jdbi.open();
-        try {
-            handle.begin();
-            handle.getConnection().setAutoCommit(false);
-            BookDAO bookDAO = handle.attach(BookDAO.class);
-            Book book = bookDAO.getBookById(bookId);
-            if (book != null) {
-                if (bookDAO.deleteBook(bookId)) {
-                    handle.commit();
-                    return true;
-                } else {
-                    throw new Exception("Error, book has NOT been deleted!");
-                }
-            } else {
-                throw new Exception("Error, book with id = " + bookId + " does NOT exist in database!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            handle.rollback();
-            return false;
-        } finally {
-            handle.close();
-        }
-    }
 
 }

@@ -1,10 +1,10 @@
 package com.nikolas.master_thesis;
 
+import ch.qos.logback.classic.Logger;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.httpclient.HttpClientMetricNameStrategies;
-import com.codahale.metrics.httpclient.InstrumentedHttpClients;
 import com.codahale.metrics.jmx.JmxReporter;
+import com.nikolas.master_thesis.config.HikariBundle;
 import com.nikolas.master_thesis.db.*;
 import com.nikolas.master_thesis.health.TemplateHealthCheck;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
@@ -15,20 +15,24 @@ import com.nikolas.master_thesis.resources.OrderResource;
 import com.nikolas.master_thesis.service.*;
 import com.nikolas.master_thesis.util.DWBExceptionMapper;
 import io.dropwizard.Application;
-import io.dropwizard.client.HttpClientBuilder;
+import io.dropwizard.Bundle;
+import io.dropwizard.ConfiguredBundle;
+import io.dropwizard.db.PooledDataSourceFactory;
+import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.apache.http.client.HttpClient;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.postgres.PostgresPlugin;
+import org.slf4j.LoggerFactory;
 
 public class DropwizardMasterThesisApplication extends Application<DropwizardMasterThesisConfiguration> {
 
     private final static MetricRegistry metricRegistry = new MetricRegistry();
     private static Meter requests = metricRegistry.meter("requests");
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(DropwizardMasterThesisApplication.class);
 
 
     public static void main(final String[] args) throws Exception {
@@ -41,8 +45,13 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
     }
 
 
+    private final HikariBundle hikariBundle = new HikariBundle();
+
     @Override
     public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) {
+        //TODO: fix this -> add HikariBundle if there is NO other way to do it!
+        bootstrap.addBundle((ConfiguredBundle) this.hikariBundle);
+
     }
 
     @Override
@@ -51,14 +60,7 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final Jdbi jdbi = jdbiFactory.build(environment, configuration.getDataSourceFactory(), "postgresql");
         jdbi.installPlugin(new PostgresPlugin());
 
-        createTables(jdbi); // creating tables IFF needed -> on 1st run
-
-        final HttpClient httpClient = new HttpClientBuilder(environment)
-                .using(configuration.getHttpClientConfiguration())
-                .build(getName());
-//        final ExternalResour
-        final HttpClient httpClient2 = InstrumentedHttpClients.createDefault(metricRegistry, HttpClientMetricNameStrategies.HOST_AND_METHOD);
-
+        // createTables(jdbi); // creating tables IFF needed -> on 1st run
 
         final BookMSMapper bookMSMapper = BookMSMapper.INSTANCE;
 
@@ -81,7 +83,6 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         environment.jersey().register(categoryResource);
         environment.jersey().register(authorResource);
         environment.jersey().register(orderResource);
-        environment.jersey().register(httpClient2);
 
         setUpMetrics();
     }
@@ -99,7 +100,6 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
                 .build();
         // ... report every 5s AFTER waiting for 5s!
         consoleReporter.start(5, TimeUnit.SECONDS);
-        
          */
     }
 
