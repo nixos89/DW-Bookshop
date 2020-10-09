@@ -1,5 +1,6 @@
 package com.nikolas.master_thesis.config;
 
+/*
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.zaxxer.hikari.HikariConfig;
@@ -7,9 +8,10 @@ import io.dropwizard.db.ManagedDataSource;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
+*/
 public class HikariConfiguration {
 
+/*
     private ManagedDataSource managedDataSource;
 
     public long connectionTimeoutMillis = TimeUnit.SECONDS.toMillis(30);
@@ -89,4 +91,5 @@ public class HikariConfiguration {
 
         return managedDataSource;
     }
+    */
 }

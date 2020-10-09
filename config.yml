@@ -13,6 +13,10 @@ server:
     type: http
     port: 8080
   
+  # values are default for next two respective properties (10 and 1024 changed respectively to... 
+  # ...2 and 5 due to CPU limitation, but minThreads=2 and maxThreads=10 give best performances)
+  minThreads: 2 
+  maxThreads: 10
   # The maximum number of requests to queue before blocking the acceptors.
   maxQueuedRequests: 1024 # 1024 is default
 
@@ -41,7 +45,8 @@ logging:
       # immediateFlush: true
       # filterFactories:
       #   - type: URI
-    
+
+# commeting out for type CONSOLE    
     - type: console
       threshold: ALL
       queueSize: 15024
@@ -71,7 +76,7 @@ database:
   validationQueryTimeout: 3s # the timeout before a connection validation queries fail
   initialSize: 2 
   minSize: 2 # the minimum number of connections to keep open
-  maxSize: 10   # the maximum number of connections to keep open
+  maxSize: 5   # the maximum number of connections to keep open
   checkConnectionWhileIdle: false # whether or not idle connections should be validated
 
   # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing

@@ -1,11 +1,14 @@
 package com.nikolas.master_thesis.config;
 
+/*
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.dropwizard.db.ManagedDataSource;
+*/
 
-public class ManagedHikariPoolWrapper extends HikariDataSource implements ManagedDataSource {
+public class ManagedHikariPoolWrapper /*extends HikariDataSource implements ManagedDataSource */{
 
+/*
     public ManagedHikariPoolWrapper(HikariConfig hikariConfig) {
         super(hikariConfig);
     }
@@ -18,4 +21,5 @@ public class ManagedHikariPoolWrapper extends HikariDataSource implements Manage
     public void stop() throws Exception {
         this.close();
     }
+    */
 }

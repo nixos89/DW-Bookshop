@@ -3,9 +3,9 @@ package com.nikolas.master_thesis;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.nikolas.master_thesis.config.HikariConfiguration;
-import com.nikolas.master_thesis.config.ManagedHikariPoolWrapper;
-import com.zaxxer.hikari.HikariConfig;
+// import com.nikolas.master_thesis.config.HikariConfiguration;
+// import com.nikolas.master_thesis.config.ManagedHikariPoolWrapper;
+// import com.zaxxer.hikari.HikariConfig;
 import io.dropwizard.Configuration;
 import io.dropwizard.client.HttpClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
@@ -31,6 +31,7 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
     @JsonProperty("adminContextPath")
     public String adminContextPath;
 
+/*
     HikariConfiguration hikariConfiguration;
 
     private ManagedDataSource managedDataSource;
@@ -72,7 +73,7 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
     @NotNull
     @JsonProperty
     private HttpClientConfiguration httpClient = new HttpClientConfiguration();
-
+*/
     @Valid
     @NotNull
     private DataSourceFactory dataSourceFactory = new DataSourceFactory();
@@ -106,6 +107,7 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
     public void setDataSourceFactory(DataSourceFactory dataSourceFactory) {
         this.dataSourceFactory = dataSourceFactory;
     }
+    /*
 
     @JsonProperty("httpClient")
     public HttpClientConfiguration getHttpClientConfiguration() {
@@ -166,4 +168,5 @@ public class DropwizardMasterThesisConfiguration extends Configuration {
 
         return managedDataSource;
     }
+    */
 }

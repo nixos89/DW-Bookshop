@@ -1,9 +1,11 @@
 package com.nikolas.master_thesis.config;
 
+/*
 import com.nikolas.master_thesis.DropwizardMasterThesisConfiguration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+*/
 
 
 /**
@@ -11,8 +13,9 @@ import io.dropwizard.setup.Environment;
  *
  * Note that this bundle should be registered before any other bundles that depend on it.
  */
-public class HikariBundle implements ConfiguredBundle<HikariConfigurationProvider> {
+public class HikariBundle /*implements ConfiguredBundle<HikariConfigurationProvider> */{
 
+/*
     @Override
     public void run(HikariConfigurationProvider hikariConfigurationProvider, Environment environment) throws Exception {
         // The Data Source is created by this call, and is retained as a field on the configuration object itself.
@@ -25,4 +28,6 @@ public class HikariBundle implements ConfiguredBundle<HikariConfigurationProvide
     public void initialize(Bootstrap<?> bootstrap) {
 
     }
+
+    */
 }

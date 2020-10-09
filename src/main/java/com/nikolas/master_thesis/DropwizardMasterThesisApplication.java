@@ -4,7 +4,6 @@ import ch.qos.logback.classic.Logger;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.jmx.JmxReporter;
-import com.nikolas.master_thesis.config.HikariBundle;
 import com.nikolas.master_thesis.db.*;
 import com.nikolas.master_thesis.health.TemplateHealthCheck;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
@@ -15,10 +14,6 @@ import com.nikolas.master_thesis.resources.OrderResource;
 import com.nikolas.master_thesis.service.*;
 import com.nikolas.master_thesis.util.DWBExceptionMapper;
 import io.dropwizard.Application;
-import io.dropwizard.Bundle;
-import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.db.PooledDataSourceFactory;
-import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.jdbi3.JdbiFactory;
 import io.dropwizard.jersey.jackson.JsonProcessingExceptionMapper;
 import io.dropwizard.setup.Bootstrap;
@@ -27,6 +22,11 @@ import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.slf4j.LoggerFactory;
+
+// import com.codahale.metrics.graphite.Graphite;
+// import com.codahale.metrics.graphite.GraphiteReporter;
+// import com.nikolas.master_thesis.config.HikariBundle;
+//import io.dropwizard.hibernate.HibernateBundle;
 
 public class DropwizardMasterThesisApplication extends Application<DropwizardMasterThesisConfiguration> {
 
@@ -45,14 +45,10 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
     }
 
 
-    private final HikariBundle hikariBundle = new HikariBundle();
+    // private final HikariBundle hikariBundle = new HikariBundle();
 
     @Override
-    public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) {
-        //TODO: fix this -> add HikariBundle if there is NO other way to do it!
-        bootstrap.addBundle((ConfiguredBundle) this.hikariBundle);
-
-    }
+    public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) { }
 
     @Override
     public void run(final DropwizardMasterThesisConfiguration configuration, final Environment environment) {
@@ -91,16 +87,6 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         requests.mark();
         final JmxReporter jmxReporter = JmxReporter.forRegistry(metricRegistry).build();
         jmxReporter.start();
-
-        /*
-        // setting up reports to console...
-        ConsoleReporter consoleReporter = ConsoleReporter.forRegistry(metricRegistry)
-                .convertRatesTo(TimeUnit.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        // ... report every 5s AFTER waiting for 5s!
-        consoleReporter.start(5, TimeUnit.SECONDS);
-         */
     }
 
 
