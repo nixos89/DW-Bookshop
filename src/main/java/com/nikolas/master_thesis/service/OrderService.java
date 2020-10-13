@@ -15,6 +15,7 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class OrderService {
 
@@ -27,11 +28,9 @@ public class OrderService {
     }
 
 
-    public OrderResponseDTO addOrder(OrderListDTO orderRequest, String username) {
+    public synchronized OrderResponseDTO addOrder(OrderListDTO orderRequest, String username) {
         Handle handle = jdbi.open();
         try {
-            Set<OrderItem> orderItems = new HashSet<>();
-            Order order = new Order();
             handle.begin();
             handle.getConnection().setAutoCommit(false);
             if (orderRequest != null) {
@@ -40,9 +39,17 @@ public class OrderService {
                 if (user == null) {
                     throw new Exception("Error, user with username: " + username + " doesn't exist in DB!");
                 }
+                Set<OrderItem> orderItems = new HashSet<>();
+                Order order = new Order();
+
                 BookDAO bookDAO = handle.attach(BookDAO.class);
+                List<Long> orderBookIds = orderRequest.getOrders().stream().map(AddOrderDTO::getBookId).collect(Collectors.toList());
+                List<Book> booksFromOrder = bookDAO.getAllBooksFromOrder(orderBookIds);
+                Map<Long, Book> booksById = new HashMap<>();
+                booksFromOrder.forEach(b -> booksById.put(b.getBookId(), b));
+
                 for (AddOrderDTO addOrder : orderRequest.getOrders()) {
-                    Book book = bookDAO.getBookById(addOrder.getBookId());
+                    Book book = booksById.get(addOrder.getBookId());
                     if (book == null) {
                         throw new Exception("Error, book with id " + addOrder.getBookId() + " does NOT exist in DB!");
                     } else if (addOrder.getAmount() > book.getAmount()) {

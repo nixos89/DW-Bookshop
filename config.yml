@@ -12,50 +12,76 @@ server:
   connector:
     type: http
     port: 8080
+  
+  # values are default for next two respective properties (10 and 1024 changed respectively to... 
+  # ...2 and 5 due to CPU limitation, but minThreads=2 and maxThreads=10 give best performances)
+  minThreads: 2 
+  maxThreads: 10
+  # The maximum number of requests to queue before blocking the acceptors.
+  maxQueuedRequests: 1024 # 1024 is default
+
 
 logging:
   level: INFO
   loggers:
     com.nikolas.master_thesis: DEBUG
 
+  appenders:
+    # - type: file
+    #   currentLogFilename: /home/nikola/Documents/DWApp-LOGs/DW-Bookshop_LOG.log
+    #   threshold: ALL
+    #   queueSize: 15024
+    #   archive: true
+    #   archivedLogFilenamePattern: /home/nikola/Documents/DWApp-LOGs/DW-Bookshop_LOG-%d.log
+    #   archivedFileCount: 5
+    #   discardingThreshold: 0
+    #   timeZone: UTC+2
+    #   logFormat: "%-5p [%d{ISO8601,UTC+2}] %c: %m%n%rEx"
+      # logFormat:  "%h %l %u [%t] '%r' %s %b referer '%i{Referer}' '%i{User-Agent}' \n"
+      # logFormat: "%h %l %u %t \"%r\" %>s %b"      
+      # logFormat: "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" combined      
+
+      # bufferSize: 8KB
+      # immediateFlush: true
+      # filterFactories:
+      #   - type: URI
+
+# commeting out for type CONSOLE    
+    - type: console
+      threshold: ALL
+      queueSize: 15024
+      discardingThreshold: 0
+      timeZone: UTC+2
+      target: stdout
+      logFormat: "%-5p [%d{ISO8601,UTC+2}] %c: %m%n%rEx"
+
+
 database:
-  # the name of your JDBC driver
-  driverClass: org.postgresql.Driver
-
-  # username
-  user: postgres
-
-  # password
-  password: postgres
-
-  # JDBC url (if port 5050 doesn't work try 5432)
+  driverClass: org.postgresql.Driver # the name of your JDBC driver
+  user: postgres # username
+  password: postgres # password
   url: jdbc:postgresql://localhost:5432/dw_app_db
 
   # any properties specific to your JDBC driver:
   properties:
     charSet: UTF-8
-    hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect # added later from "Dropwizard Documentation.pdf" file
+    hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
 
   # the maximum amount of time to wait on an empty pool before throwing an exception
-  maxWaitForConnection: 1s
+  maxWaitForConnection: 5s
 
   # the SQL query to run when validating a connection's liveness
   validationQuery: "/* MyService Health Check */ SELECT 1"
 
-  # the timeout before a connection validation queries fail
-  validationQueryTimeout: 3s
-
-  # the minimum number of connections to keep open
-  minSize: 8
-
-  # the maximum number of connections to keep open
-  maxSize: 32
-
-  # whether or not idle connections should be validated
-  checkConnectionWhileIdle: false
+  validationQueryTimeout: 3s # the timeout before a connection validation queries fail
+  initialSize: 2 
+  minSize: 2 # the minimum number of connections to keep open
+  maxSize: 5   # the maximum number of connections to keep open
+  checkConnectionWhileIdle: false # whether or not idle connections should be validated
 
   # the amount of time to sleep between runs of the idle connection validation, abandoned cleaner and idle pool resizing
   evictionInterval: 10s
 
   # the minimum amount of time an connection must sit idle in the pool before it is eligible for eviction
   minIdleTime: 1 minute
+  

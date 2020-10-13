@@ -129,6 +129,7 @@
     </dependencies>
   </dependencyManagement>
   <properties>
+    <metrics.version>4.1.2</metrics.version>
     <dropwizard.version>1.3.8</dropwizard.version>
     <mainClass>com.nikolas.master_thesis.DropwizardMasterThesisApplication</mainClass>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

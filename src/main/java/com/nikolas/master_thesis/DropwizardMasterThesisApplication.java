@@ -1,11 +1,16 @@
 package com.nikolas.master_thesis;
 
+import ch.qos.logback.classic.Logger;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jmx.JmxReporter;
 import com.nikolas.master_thesis.db.*;
 import com.nikolas.master_thesis.health.TemplateHealthCheck;
-import com.nikolas.master_thesis.mapstruct_mappers.AuthorMSMapper;
 import com.nikolas.master_thesis.mapstruct_mappers.BookMSMapper;
-import com.nikolas.master_thesis.mapstruct_mappers.CategoryMSMapper;
-import com.nikolas.master_thesis.resources.*;
+import com.nikolas.master_thesis.resources.AuthorResource;
+import com.nikolas.master_thesis.resources.BookResource;
+import com.nikolas.master_thesis.resources.CategoryResource;
+import com.nikolas.master_thesis.resources.OrderResource;
 import com.nikolas.master_thesis.service.*;
 import com.nikolas.master_thesis.util.DWBExceptionMapper;
 import io.dropwizard.Application;
@@ -16,10 +21,19 @@ import io.dropwizard.setup.Environment;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.postgres.PostgresPlugin;
+import org.slf4j.LoggerFactory;
 
-import java.nio.file.attribute.UserPrincipalLookupService;
+// import com.codahale.metrics.graphite.Graphite;
+// import com.codahale.metrics.graphite.GraphiteReporter;
+// import com.nikolas.master_thesis.config.HikariBundle;
+//import io.dropwizard.hibernate.HibernateBundle;
 
 public class DropwizardMasterThesisApplication extends Application<DropwizardMasterThesisConfiguration> {
+
+    private final static MetricRegistry metricRegistry = new MetricRegistry();
+    private static Meter requests = metricRegistry.meter("requests");
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(DropwizardMasterThesisApplication.class);
+
 
     public static void main(final String[] args) throws Exception {
         new DropwizardMasterThesisApplication().run(args);
@@ -31,6 +45,8 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
     }
 
 
+    // private final HikariBundle hikariBundle = new HikariBundle();
+
     @Override
     public void initialize(final Bootstrap<DropwizardMasterThesisConfiguration> bootstrap) { }
 
@@ -40,7 +56,7 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         final Jdbi jdbi = jdbiFactory.build(environment, configuration.getDataSourceFactory(), "postgresql");
         jdbi.installPlugin(new PostgresPlugin());
 
-        createTables(jdbi); // creating tables IFF needed -> on 1st run
+        // createTables(jdbi); // creating tables IFF needed -> on 1st run
 
         final BookMSMapper bookMSMapper = BookMSMapper.INSTANCE;
 
@@ -63,10 +79,18 @@ public class DropwizardMasterThesisApplication extends Application<DropwizardMas
         environment.jersey().register(categoryResource);
         environment.jersey().register(authorResource);
         environment.jersey().register(orderResource);
+
+        setUpMetrics();
+    }
+
+    void setUpMetrics() {
+        requests.mark();
+        final JmxReporter jmxReporter = JmxReporter.forRegistry(metricRegistry).build();
+        jmxReporter.start();
     }
 
 
-    void createTables(Jdbi jdbi){
+    void createTables(Jdbi jdbi) {
         Handle handle = jdbi.open();
         AuthorDAO authorDAO = handle.attach(AuthorDAO.class);
         BookDAO bookDAO = handle.attach(BookDAO.class);
